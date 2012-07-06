@@ -1,0 +1,5 @@
+ROLLNAME = hdf$(ROLLSUFFIX)
+RELEASE  = 1
+COLOR    = orange
+
+REDHAT.ROOT = $(PWD)

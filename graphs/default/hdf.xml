@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="no"?>
+
+<graph>
+
+<description>
+HDF libraries
+http://www.hdfgroup.org/products/hdf4
+http://www.hdfgroup.org/products/hdf5
+</description>
+
+<copyright>
+Copyright (c) 2000 - 2011 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
+
+<changelog>
+</changelog>
+
+<edge from="base">
+  <to>hdf-common</to>
+</edge>
+<order head="base">
+  <tail>hdf-common</tail>
+</order>
+
+<edge from="envmodules-common">
+  <to>hdf-modules-common</to>
+</edge>
+<order head="envmodules-common">
+  <tail>hdf-modules-common</tail>
+</order>
+
+<edge from="server">
+  <to>dataform-doc</to>
+</edge>
+<order head="server">
+  <tail>dataform-doc</tail>
+</order>
+
+<edge from="base">
+  <to>dataform-roll-test</to>
+</edge>
+<order head="base">
+  <tail>dataform-roll-test</tail>
+</order>
+
+</graph>
