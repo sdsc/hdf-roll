@@ -99,23 +99,17 @@ CCOMP = mpicc
 FCOMP = mpif90
 
 build:
-	tar zxvf $(SOURCE).tgz
+	tar zxvf $(SOURCE).tar.gz
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  export CC=$(CCOMP); \
 	  export FC=$(FCOMP);\
 	  cd $(SOURCE); \
-	  if test "$(ROLLCOMPILER)" = "intel"; then \
 	  ./configure \
-	    --prefix=$(PKGROOT) --disable-hl --enable-production \
+	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
 	    --enable-shared --enable-static --enable-parallel --without-zlib; \
-	  else \
-	  ./configure \
-	    --prefix=$(PKGROOT) --disable-hl --enable-production --enable-fortran\
-	    --enable-shared --enable-static --enable-parallel --without-zlib; \
-	  fi;  \
-	  make \
+	  make FCFLAGS=-fPIC \
 	)
 
 install::
