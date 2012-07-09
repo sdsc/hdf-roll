@@ -109,7 +109,7 @@ build:
 	  ./configure \
 	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
 	    --enable-shared --enable-static --enable-parallel --without-zlib; \
-	  make FCFLAGS=-fPIC \
+	  make CFLAGS=-fPIC FCFLAGS=-fPIC \
 	)
 
 install::
