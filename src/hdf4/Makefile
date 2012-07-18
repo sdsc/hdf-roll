@@ -72,23 +72,31 @@ COMPILERSETUP = \
 
 CCOMP = gcc
 FCOMP = gfortran
+CFLAGS = -mavx -O2
+FFLAGS = -mavx -O2
 ifeq ("$(ROLLCOMPILER)", "intel")
   CCOMP = icc
   FCOMP = ifort
+  CFLAGS = -xHOST -O2
+  FFLAGS = -xHOST -O2
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf90
+  CFLAGS = -fast
+  FFLAGS = -fast
 endif
 
 build:
-	tar zxvf $(SOURCE).tgz
+	tar zxvf $(SOURCE).tar.gz
 	( \
 	  $(COMPILERSETUP); \
 	  export CC=$(CCOMP); \
 	  export F77=$(FCOMP);\
+          export CFLAGS="$(CFLAGS)"; \
+          export FFLAGS="$(FFLAGS)"; \
 	  cd $(SOURCE); \
-	  tar xvzf zlib-1.2.3.tgz; \
-	  cd zlib-1.2.3; \
+	  tar xvzf ../zlib-1.2.7.tar.gz; \
+	  cd zlib-1.2.7; \
 	  ./configure --prefix=`pwd`/build; \
 	  make; \
 	  make install; \
@@ -96,7 +104,7 @@ build:
 	  ./configure \
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
-	    --enable-static --with-zlib=`pwd`/zlib-1.2.3/build/lib; \
+	    --enable-static --with-zlib=`pwd`/zlib-1.2.7/build/lib; \
 	  make \
 	)
 
