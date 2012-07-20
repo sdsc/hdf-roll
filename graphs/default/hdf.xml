@@ -23,6 +23,13 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
   <tail>hdf-common</tail>
 </order>
 
+<edge from="envmodules-common">
+  <to>hdf-modules-common</to>
+</edge>
+<order head="envmodules-common">
+  <tail>hdf-modules-common</tail>
+</order>
+
 <edge from="server">
   <to>hdf-doc</to>
 </edge>
