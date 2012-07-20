@@ -1,0 +1,23 @@
+#!/bin/bash
+/bin/mkdir -m 0755 -p ROOT_PKGROOTMODULEROOT
+
+cat > ROOT_PKGROOTMODULEROOT/VERSION <<END
+#%Module1.0
+module-whatis	 hdf5 
+module-whatis	 Version: VERSION
+module-whatis	 Description: hdf5 
+module-whatis	 Compiler:ROLLCOMPILER 
+setenv		 HDF5HOME /opt/hdf5/ROLLCOMPILER/ROLLMPI/ROLLNETWORK
+prepend-path	 PATH /opt/hdf5/ROLLCOMPILER/ROLLMPI/ROLLNETWORK/bin 
+prepend-path	 LD_LIBRARY_PATH /opt/hdf5/ROLLCOMPILER/ROLLMPI/ROLLNETWORK/lib 
+prepend-path	 LIBPATH /opt/hdf5/ROLLCOMPILER/ROLLMPI/ROLLNETWORK/lib 
+END
+
+chmod 0644  ROOT_PKGROOTMODULEROOT/VERSION
+
+cat > ROOT_PKGROOTMODULEROOT/.version.VERSION <<END
+#%Module1.0
+set ModulesVersion "VERSION"
+END
+
+(cd ROOT_PKGROOTMODULEROOT; /bin/ln -s .version.VERSION .version )

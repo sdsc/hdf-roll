@@ -122,6 +122,8 @@ install::
 	  export FC=$(FCOMP); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
+	cat hdf5.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/hdf5;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g;s!ROLLMPI!$(ROLLMPI)!g;s!ROLLNETWORK!$(ROLLNETWORK)!g" \
+          > $(REDHAT.ROOT)/src/build-hdf4-modules/$(NAME).module
 
 clean::
 	rm -rf $(SOURCE)
