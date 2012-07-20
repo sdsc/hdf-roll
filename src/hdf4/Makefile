@@ -117,8 +117,6 @@ install::
 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
-	cat hdf4.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/hdf4;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g" \
-          > $(REDHAT.ROOT)/src/build-hdf4-modules/$(NAME).module
 
 clean::
 	rm -rf $(SOURCE)
