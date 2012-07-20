@@ -56,5 +56,5 @@
 
 SRCDIRS = `find . -maxdepth 1 -type d \
 	-not -name CVS \
-	-not -name .`
+	-not -name .` \
 	-not -name hdf-modules` hdf-modules
