@@ -151,34 +151,26 @@ SKIP: {
 # hdf-common.xml
 foreach my $package(@PACKAGES) {
   foreach my $compiler(@COMPILERS) {
+
     SKIP: {
-      skip "$package/$compiler not installed", 2
+
+      skip "$package/$compiler not installed", 5
         if ! -d "/opt/$package/$compiler";
       my ($noVersion) = $package =~ m#([^/]+)#;
       $output = `bash $TESTFILE.sh $compiler /opt/$package/$compiler $CC{$compiler} $TESTFILE$noVersion.c "$LIBS{$noVersion}" 2>&1`;
       ok(-f "$TESTFILE.exe", "compile/link with $package/$compiler");
       like($output, qr/SUCCEED/, "run with $package/$compiler");
       `/bin/rm $TESTFILE.exe`;
-    }
-  }
-}
 
-# hdf-modules-common.xml
-SKIP: {
-  skip 'modules not installed' if ! -f '/etc/profile.d/modules.sh';
-  foreach my $package(@PACKAGES) {
-    foreach my $compiler(@COMPILERS) {
-      SKIP: {
-        skip "$package/$compiler not installed", 1
-          if ! -d "/opt/$package/$compiler";
-        my ($noVersion) = $package =~ m#([^/]+)#;
-        `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/[0-9]* 2>&1`;
-        ok($? == 0, "$package/$compiler module installed");
-        `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/.version.[0-9]* 2>&1`;
-        ok($? == 0, "$package/$compiler version module installed");
-        ok(-l "/opt/modulefiles/applications/.$compiler/$noVersion/.version",
-           "$package/$compiler version module link created");
-      }
+      skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
+      my ($noVersion) = $package =~ m#([^/]+)#;
+      `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compiler module installed");
+      `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/.version.[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compiler version module installed");
+      ok(-l "/opt/modulefiles/applications/.$compiler/$noVersion/.version",
+         "$package/$compiler version module link created");
+
     }
   }
 }
