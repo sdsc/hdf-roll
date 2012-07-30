@@ -99,8 +99,6 @@ build:
              if test "$${version}" -lt 461; then \
                 export CFLAGS="`echo "$(CFLAGS)"|sed 's/\-mavx //'`"; \
                 export FFLAGS="`echo "$(FFLAGS)"|sed 's/\-mavx //'`"; \
-                echo "$${CFLAGS}"; \
-                echo "$${FFLAGS}"; \
              fi; \
           fi; \
 	  cd $(SOURCE); \
