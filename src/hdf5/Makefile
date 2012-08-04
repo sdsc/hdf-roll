@@ -106,9 +106,15 @@ build:
 	  export CC=$(CCOMP); \
 	  export FC=$(FCOMP);\
 	  cd $(SOURCE); \
-	  ./configure \
-	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
-	    --enable-shared --enable-static --enable-parallel --without-zlib; \
+          if test "$(ROLLCOMPILER)" == "pgi"; then \
+	     ./configure \
+	       --prefix=$(PKGROOT) --enable-production --enable-fortran \
+	       --enable-shared --enable-static --enable-parallel --without-zlib; \
+          else
+	     ./configure \
+	       --prefix=$(PKGROOT) --enable-production --enable-fortran \
+	       --enable-shared --enable-static --enable-parallel; \
+          fi
 	  make CFLAGS=-fPIC FCFLAGS=-fPIC \
 	)
 
