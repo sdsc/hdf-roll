@@ -1,3 +1,3 @@
 NAME    = hdf4-modules_$(ROLLCOMPILER)
 VERSION = 2.7
-RELEASE = 4
+RELEASE = 5

@@ -1,3 +1,3 @@
 NAME    = hdf5-modules_$(ROLLCOMPILER)
 VERSION = 1.8.9
-RELEASE = 4
+RELEASE = 5
