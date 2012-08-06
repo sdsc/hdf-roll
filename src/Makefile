@@ -69,12 +69,24 @@ copyright rpm pkg clean::
 	    for c in $(ROLLCOMPILER); do \
 	        grep -q ROLLMPI $$i/version.mk; \
 	        if test $$? -eq 0; then \
-	          for m in $(ROLLMPI); do \
+	          grep -q ONEBUILD $$i/version.mk; \
+	          if test $$? -ne 0; then \
+	            for m in $(ROLLMPI); do \
 	            for n in $(ROLLNETWORK); do \
 	              echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n; \
 	              (cd $$i; $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n $@); \
+	              done; \
 	            done; \
-	          done; \
+                   else
+	            for m in $(ROLLMPI); do \
+	            for n in $(ROLLNETWORK); do \
+	              echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n; \
+	              (cd $$i; $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n $@); \
+                      break; \
+	              done; \
+                      break;
+	            done; \
+                   fi; \
 	        else \
 	          echo make $@ in $$i with ROLLCOMPILER=$$c; \
 	          (cd $$i; $(MAKE) ROLLCOMPILER=$$c $@); \
