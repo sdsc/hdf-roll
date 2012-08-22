@@ -94,13 +94,6 @@ build:
 	  export F77=$(FCOMP);\
           export CFLAGS="$(CFLAGS)"; \
           export FFLAGS="$(FFLAGS)"; \
-          if test "$(ROLLCOMPILER)" = "gnu"; then \
-             version=`gcc -v 2>&1 |grep version|awk '{print $$3}'|sed 's/\.//g'`; \
-             if test "$${version}" -lt 461; then \
-                export CFLAGS="`echo "$(CFLAGS)"|sed 's/\-mavx //'`"; \
-                export FFLAGS="`echo "$(FFLAGS)"|sed 's/\-mavx //'`"; \
-             fi; \
-          fi; \
 	  cd $(SOURCE); \
 	  tar xvzf ../zlib-1.2.7.tar.gz; \
 	  cd zlib-1.2.7; \
