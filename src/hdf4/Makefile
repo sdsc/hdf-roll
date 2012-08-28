@@ -73,18 +73,17 @@ COMPILERSETUP = \
 
 CCOMP = gcc
 FCOMP = gfortran
-CFLAGS = -mavx -O2 -g
-FFLAGS = -mavx -O2 -g
+COMPILE_FLAGS = -O2 -g
 ifeq ("$(ROLLCOMPILER)", "intel")
   CCOMP = icc
   FCOMP = ifort
-  CFLAGS = -xHOST -O2
-  FFLAGS = -xHOST -O2
+  COMPILE_FLAGS = -xHOST -O2
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf90
-  CFLAGS = -fast
-  FFLAGS = -fast
+  COMPILE_FLAGS = -fast
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  COMPILE_FLAGS += -mavx
 endif
 
 build:
@@ -93,8 +92,8 @@ build:
 	  $(COMPILERSETUP); \
 	  export CC=$(CCOMP); \
 	  export F77=$(FCOMP);\
-          export CFLAGS="$(CFLAGS)"; \
-          export FFLAGS="$(FFLAGS)"; \
+          export CFLAGS="$(COMPILE_FLAGS)"; \
+          export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE); \
 	  tar xvzf ../zlib-1.2.7.tar.gz; \
 	  cd zlib-1.2.7; \
