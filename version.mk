@@ -1,4 +1,4 @@
-ROLLNAME = hdf$(ROLLSUFFIX)
+ROLLNAME = hdf
 RELEASE  = 5
 COLOR    = orange
 

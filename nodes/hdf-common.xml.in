@@ -20,8 +20,6 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 <package>hdf5_ROLLCOMPILER_ROLLMPI_ROLLNETWORK</package>
 <package>hdf4-modules_ROLLCOMPILER</package>
 <package>hdf5-modules_ROLLCOMPILER</package>
-
-<post>
-</post>
+<package>hdf-roll-test</package>
 
 </kickstart>

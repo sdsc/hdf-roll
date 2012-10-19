@@ -1,25 +1,4 @@
-<?xml version="1.0" standalone="no"?>
-
-<kickstart>
-
-<description>
-The hdf roll installation test.
-</description>
-
-<copyright>
-Copyright (c) 2000 - 2011 The Regents of the University of California.
-All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
-</copyright>
-
-<changelog>
-</changelog>
-
-<post>
-
-/bin/mkdir -m 0755 /root/rolltests
-
-<file name="/root/rolltests/hdf.t" perms="0755">
-<![CDATA[#!/usr/bin/perl -w
+#!/usr/bin/perl -w
 # hdf roll installation test.  Usage:
 # hdf.t [nodetype]
 #   where nodetype is one of "Compute", "Dbnode", "Frontend" or "Login"
@@ -34,15 +13,9 @@ my $appliance = $#ARGV >= 0 ? $ARGV[0] :
 my $installedOnAppliancesPattern = '.';
 my $output;
 
-my @COMPILERS = (
-  'ROLLCOMPILER',
-);
-my @MPIS = (
-  'ROLLMPI',
-);
-my @NETWORKS = (
-  'ROLLNETWORK',
-);
+my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
+my @NETWORKS = split(/\s+/, 'ROLLNETWORK');
+my @MPIS = split(/\s+/, 'ROLLMPI');
 my @PACKAGES = ('hdf4', 'hdf5');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 my %LIBS = (
@@ -192,9 +165,3 @@ foreach my $package(@PACKAGES) {
 }
 
 `/bin/rm -fr $TESTFILE*`;
-]]>
-</file>
-
-</post>
-
-</kickstart> 
