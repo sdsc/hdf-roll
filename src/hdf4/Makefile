@@ -59,7 +59,7 @@ ifndef ROLLCOMPILER
 endif
 
 PKGROOT = /opt/hdf4/$(ROLLCOMPILER)
-SOURCE = hdf4-$(VERSION)
+SOURCE = hdf-4.$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
@@ -95,8 +95,8 @@ build:
           export CFLAGS="$(COMPILE_FLAGS)"; \
           export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE); \
-	  tar xvzf ../zlib-1.2.7.tar.gz; \
-	  cd zlib-1.2.7; \
+	  tar xvzf ../zlib-*.tar.gz; \
+	  cd zlib-*; \
 	  ./configure --prefix=`pwd`/build; \
 	  make; \
 	  make install; \
@@ -104,7 +104,7 @@ build:
 	  ./configure \
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
-	    --enable-static --with-zlib=`pwd`/zlib-1.2.7/build/lib; \
+	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib; \
 	  make \
 	)
 
