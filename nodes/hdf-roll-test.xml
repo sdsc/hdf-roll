@@ -1,0 +1,186 @@
+<?xml version="1.0" standalone="no"?>
+
+<kickstart>
+
+<description>
+The hdf roll installation test.
+</description>
+
+<copyright>
+Copyright (c) 2000 - 2011 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
+
+<changelog>
+</changelog>
+
+<post>
+
+/bin/mkdir -m 0755 /root/rolltests
+
+<file name="/root/rolltests/hdf.t" perms="0755">
+<![CDATA[#!/usr/bin/perl -w
+# hdf roll installation test.  Usage:
+# hdf.t [nodetype]
+#   where nodetype is one of "Compute", "Dbnode", "Frontend" or "Login"
+#   if not specified, the test assumes either Compute or Frontend
+
+use Test::More qw(no_plan);
+
+my $TESTFILE = "tmphdf";
+
+my $appliance = $#ARGV >= 0 ? $ARGV[0] :
+                -d '/export/rocks/install' ? 'Frontend' : 'Compute';
+my $installedOnAppliancesPattern = '.';
+my $output;
+
+my @COMPILERS = (
+  'gnu',
+  'pgi',
+  'intel',
+);
+my @PACKAGES = ('hdf4', 'hdf5');
+my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
+my %LIBS = (
+  'hdf4'=>'-lmfhdf -ldf -ljpeg -lz', 'hdf5'=>'-lhdf5'
+);
+
+open(OUT, ">${TESTFILE}hdf4.c");
+# Adapted from sd_create.c downloaded from
+# http://www.hdfgroup.org/training/HDFtraining/examples/sd_examples.html
+print OUT <<END;
+#include <stdio.h>
+#include "mfhdf.h"
+
+void check(int32 result) {
+  if(result == FAIL) {
+    printf("FAIL\\n");
+    exit(1);
+  }
+}
+
+#define DIMCOUNT 2
+#define DIM0 10
+#define DIM1 2
+
+int main() {
+  int32 dims[DIMCOUNT] = {DIM0, DIM1};
+  int32 start[DIMCOUNT] = {0, 0};
+  int32 sd_id, sds_id;
+  int16 array_data[DIM0][DIM1];
+  intn i, j;
+
+  check(sd_id = SDstart("$TESTFILE.hdf", DFACC_CREATE));
+  check(sds_id = SDcreate(sd_id, "data1", DFNT_INT16, DIMCOUNT, dims));
+  for(j = 0; j < DIM0; j++) {
+    for(i = 0; i < DIM1; i++)
+      array_data[j][i] = (i + j) + 1;
+   }
+  check(SDwritedata(sds_id, start, NULL, dims, (VOIDP)array_data));
+  check(SDendaccess(sds_id));
+  check(SDend(sd_id));
+  printf("SUCCEED\\n");
+  return 0;
+}
+END
+
+open(OUT, ">${TESTFILE}hdf5.c");
+# Adapted from h5_write.c downloaded from
+# http://www.hdfgroup.org/ftp/HDF5/examples/src-html/c.html
+print OUT <<END;
+#include <stdio.h>
+#include <stdlib.h>
+#include "hdf5.h"
+
+void check(long result) {
+  if(result < 0) {
+    printf("FAIL\\n");
+    exit(1);
+  }
+}
+
+#define NX   5
+#define NY   6
+#define RANK 2
+
+int main (void) {
+
+  hid_t   file, dataset, datatype, dataspace;
+  hsize_t dimsf[RANK] = {NX, NY};
+  int     data[NX][NY];
+  int     i, j;
+
+  for(j = 0; j < NX; j++)
+    for(i = 0; i < NY; i++)
+      data[j][i] = i + j;
+
+  check(file = H5Fcreate("$TESTFILE.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT));
+  check(dataspace = H5Screate_simple(RANK, dimsf, NULL));
+  check(datatype = H5Tcopy(H5T_NATIVE_INT));
+  check(H5Tset_order(datatype, H5T_ORDER_LE));
+  check(dataset = H5Dcreate2(file, "IntArray", datatype, dataspace,
+    H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT));
+  check(H5Dwrite(dataset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, data));
+
+  H5Sclose(dataspace);
+  H5Tclose(datatype);
+  H5Dclose(dataset);
+  H5Fclose(file);
+
+  printf("SUCCEED\\n");
+  return 0;
+}
+END
+
+open(OUT, ">$TESTFILE.sh");
+print OUT <<END;
+#!/bin/bash
+if test -f /etc/profile.d/modules.sh; then
+  . /etc/profile.d/modules.sh
+  module load \$1
+fi
+export LD_LIBRARY_PATH=\$2/lib:\$LD_LIBRARY_PATH
+\$3 -I \$2/include -o $TESTFILE.exe \$4 -L \$2/lib \$5
+./$TESTFILE.exe
+END
+
+# hdf-doc.xml
+SKIP: {
+  skip 'not server', 1 if $appliance ne 'Frontend';
+  ok(-d '/var/www/html/roll-documentation/hdf', 'doc installed');
+}
+
+# hdf-common.xml
+foreach my $package(@PACKAGES) {
+  foreach my $compiler(@COMPILERS) {
+
+    SKIP: {
+
+      skip "$package/$compiler not installed", 5
+        if ! -d "/opt/$package/$compiler";
+      my ($noVersion) = $package =~ m#([^/]+)#;
+      $output = `bash $TESTFILE.sh $compiler /opt/$package/$compiler $CC{$compiler} $TESTFILE$noVersion.c "$LIBS{$noVersion}" 2>&1`;
+      ok(-f "$TESTFILE.exe", "compile/link with $package/$compiler");
+      like($output, qr/SUCCEED/, "run with $package/$compiler");
+      `/bin/rm $TESTFILE.exe`;
+
+      skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
+      my ($noVersion) = $package =~ m#([^/]+)#;
+      `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compiler module installed");
+      `/bin/ls /opt/modulefiles/applications/.$compiler/$noVersion/.version.[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compiler version module installed");
+      ok(-l "/opt/modulefiles/applications/.$compiler/$noVersion/.version",
+         "$package/$compiler version module link created");
+
+    }
+  }
+}
+
+`/bin/rm -fr $TESTFILE*`;
+]]>
+</file>
+
+</post>
+
+</kickstart> 
