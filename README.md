@@ -6,11 +6,11 @@ This roll bundles the HDF4 and HDF5 libraries.
 
 For more information about the various packages included in the hdf roll please visit their official web pages:
 
-- <a href="http://www.hdfgroup.org/products/hdf4" target="_blank"></a> is a
+- <a href="http://www.hdfgroup.org/products/hdf4" target="_blank">HDF4</a> is a
 library and multi-object file format for storing and managing data between
 machines.
-- <a href="http://www.hdfgroup.org/products/hdf5" target="_blank"></a> is a data
-model, library, and file format for storing and managing data.
+- <a href="http://www.hdfgroup.org/products/hdf5" target="_blank">HDF5</a> is a
+data model, library, and file format for storing and managing data.
 
 
 ## Requirements
