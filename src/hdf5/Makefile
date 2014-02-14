@@ -117,14 +117,19 @@ build: $(SRC_DIRS)
 	
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)
+	mkdir -p /$(PKGROOT)
+	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+	mount  --bind  $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
 	  export CC=$(CCOMP); \
 	  export FC=$(FCOMP); \
-	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
+	  $(MAKE) install; \
+          cp -r $(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK) \
 	)
+	umount $(PKGROOT)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::

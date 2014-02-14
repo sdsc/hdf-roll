@@ -1,5 +1,5 @@
 NAME               = hdf5_$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
-VERSION            = 1.8.11
+VERSION            = 1.8.12
 RELEASE            = 0
 PKGROOT            = /opt/hdf5/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
 RPM.EXTRAS         = AutoReq:No

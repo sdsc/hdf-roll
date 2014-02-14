@@ -61,6 +61,12 @@
 PKGROOT = /opt/modulefiles/applications/.$(ROLLCOMPILER)/hdf5
 REDHAT.ROOT = $(CURDIR)/../../
 
+ifndef PYPATH
+  PYPATH = python
+endif
+
+PYVERSION = $(shell $(PYPATH) -c "from __future__ import print_function;import sys;print(sys.version[:3])")
+
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 
@@ -71,6 +77,7 @@ install::
 	  cp hdf5.module $(ROOT)/$(PKGROOT)/$(VERSION)
 	  cp hdf5.version $(ROOT)/$(PKGROOT)/.version.$(VERSION)
 	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
+	  perl -pi -e "s/PYV/$(PYVERSION)/g" $(ROOT)/$(PKGROOT)/$(VERSION)
 	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
 	  perl -pi -e 's/COMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
 	  perl -pi -e 's/COMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)

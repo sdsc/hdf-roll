@@ -60,6 +60,7 @@ int main() {
   return 0;
 }
 END
+close(OUT);
 
 open(OUT, ">${TESTFILE}hdf5.c");
 # Adapted from h5_write.c downloaded from
@@ -108,6 +109,20 @@ int main (void) {
   return 0;
 }
 END
+close(OUT);
+
+
+open(OUT, ">${TESTFILE}.py");
+print OUT <<END;
+import h5py
+fileName="${TESTFILE}.h5"
+file=h5py.File(fileName,"r")
+
+ar=file['IntArray']
+for i in range(len(ar)):
+	print i,ar[i]
+END
+close(OUT);
 
 open(OUT, ">$TESTFILE.sh");
 print OUT <<END;
@@ -120,6 +135,7 @@ export LD_LIBRARY_PATH=\$4/lib:\$LD_LIBRARY_PATH
 \$5 -I \$4/include -I \${MPIHOME}/include -o $TESTFILE.exe \$6 -L \$4/lib \$7
 ./$TESTFILE.exe
 END
+close(OUT);
 
 # hdf-doc.xml
 SKIP: {
@@ -146,6 +162,10 @@ foreach my $package(@PACKAGES) {
           $output = `bash $TESTFILE.sh $compiler $mpi $network /opt/$package/$subdir $CC{$compiler} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
+          if( $package eq 'hdf5' ) {
+             $output=`. /etc/profile.d/modules.sh; module load scipy intel $compiler ${mpi}_${network} hdf5;python $TESTFILE.py`;
+             like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with h5py");
+          }
           `/bin/rm $TESTFILE.exe`;
 
         }

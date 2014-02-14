@@ -6,6 +6,7 @@
 HDF (Hierarchical Object Oriented Format) libraries
 http://www.hdfgroup.org/products/hdf4
 http://www.hdfgroup.org/products/hdf5
+http://www.h5py.org
 </description>
 
 <copyright>
@@ -17,7 +18,9 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 </changelog>
 
 <package>hdf4_ROLLCOMPILER</package>
+<package>h5py_ROLLCOMPILER_ROLLMPI_ROLLNETWORK</package>
 <package>hdf5_ROLLCOMPILER_ROLLMPI_ROLLNETWORK</package>
+<package>hd5py_ROLLMPI_ROLLNETWORK</package>
 <package>hdf4-modules_ROLLCOMPILER</package>
 <package>hdf5-modules_ROLLCOMPILER</package>
 <package>hdf-roll-test</package>

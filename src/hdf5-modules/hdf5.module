@@ -43,3 +43,4 @@ setenv HDF5HOME $hdf5Home
 prepend-path PATH $hdf5Home/bin
 prepend-path LD_LIBRARY_PATH $hdf5Home/lib
 prepend-path LIBPATH $hdf5Home/lib
+prepend-path PYTHONPATH $hdf5Home/lib/pythonPYV/site-packages
