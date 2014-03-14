@@ -114,7 +114,6 @@ install::
           export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages; \
           export LD_LIBRARY_PATH=$(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)/lib:$${LD_LIBRARY_PATH}; \
           export LD_LIBRARY_PATH=$${MKL_HOME}/lib/intel64:$${LD_LIBRARY_PATH}; \
-          module load  scipy/$(PYVERSION); \
           module load intel; \
           export CC=icc; \
           export CXX=icpc; \
