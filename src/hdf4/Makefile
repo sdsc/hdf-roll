@@ -89,6 +89,7 @@ endif
 
 build: $(SRC_DIRS)
 	( \
+	  yum install flex bison; \
 	  $(COMPILERSETUP); \
 	  export CC=$(CCOMP); \
 	  export F77=$(FCOMP);\
