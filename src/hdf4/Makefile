@@ -69,6 +69,11 @@ include pull.mk
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
+    if test "$${module}" != "$(ROLLCOMPILER)"; then \
+      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
+      exit 2; \
+    fi; \
     module load $(ROLLCOMPILER); \
   fi
 
@@ -83,13 +88,15 @@ else ifeq ("$(ROLLCOMPILER)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf90
   COMPILE_FLAGS = -fast
-else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  COMPILE_FLAGS += -mavx
+endif
+ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(ROLLCOMPILER)", "gnu")
+    COMPILE_FLAGS += -mavx
+  endif
 endif
 
 build: $(SRC_DIRS)
 	( \
-	  yum install flex bison; \
 	  $(COMPILERSETUP); \
 	  export CC=$(CCOMP); \
 	  export F77=$(FCOMP);\

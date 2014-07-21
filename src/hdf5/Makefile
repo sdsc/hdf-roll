@@ -56,16 +56,7 @@
 #
 # $Log$
 
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-ifndef ROLLMPI
-  ROLLMPI = openmpi
-endif
-
+PKGROOT = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
@@ -75,6 +66,11 @@ include pull.mk
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
+    if test "$${module}" != "$(ROLLCOMPILER)"; then \
+      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
+      exit 2; \
+    fi; \
     module load $(ROLLCOMPILER); \
   fi
 
@@ -87,6 +83,11 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
+    if test "$${module}" != "$(MPIMODULE)"; then \
+      echo *** ERROR: MPI module $(MPIMODULE) not found; \
+      exit 2; \
+    fi; \
     module load $(MPIMODULE); \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
@@ -110,25 +111,26 @@ build: $(SRC_DIRS)
 	  ./configure \
 	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
 	    --enable-shared --enable-static --enable-parallel; \
-	  $(MAKE) CFLAGS=-fPIC FCFLAGS=-fPIC; \
+	  $(MAKE) CFLAGS=-fPIC FCFLAGS=-fPIC \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 	
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)
-	mkdir -p /$(PKGROOT)
-	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
-	mount  --bind  $(ROOT)/$(PKGROOT) $(PKGROOT)
+	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
+	-mkdir -p -m 755 $(PKGROOT)
+	mount --bind  $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
 	  export CC=$(CCOMP); \
 	  export FC=$(FCOMP); \
-	  $(MAKE) install; \
-          cp -r $(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK) \
+	  $(MAKE) install \
 	)
 	umount $(PKGROOT)
+	-rmdir -p $(PKGROOT)
+	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+	cp -r $(ROOT)/$(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::

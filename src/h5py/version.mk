@@ -1,7 +1,19 @@
-NAME               = h5py_$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+ifndef ROLLCOMPILER
+  ROLLCOMPILER = gnu
+endif
+COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+
+ifndef ROLLMPI
+  ROLLMPI = eth
+endif
+
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
+
+NAME               = h5py_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION            = 2.2.1
-RELEASE            = 0
-PKGROOT            = /opt/hdf5/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
+RELEASE            = 1
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = h5py

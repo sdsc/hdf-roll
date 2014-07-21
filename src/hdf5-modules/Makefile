@@ -61,26 +61,36 @@
 PKGROOT = /opt/modulefiles/applications/.$(ROLLCOMPILER)/hdf5
 REDHAT.ROOT = $(CURDIR)/../../
 
-ifndef PYPATH
-  PYPATH = python
-endif
-
-PYVERSION = $(shell $(PYPATH) -c "from __future__ import print_function;import sys;print(sys.version[:3])")
-
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
+
+PYSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<opt-python\>"`; \
+    if test -z "$${module}"; then \
+      module=`module avail 2>&1 | grep -o -m1 "\<python\>"`; \
+    fi; \
+    if test -n "$${module}"; then \
+      module load $${module}; \
+    fi; \
+  fi; \
+  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`
 
 build:
 
 install::
-	  mkdir -p $(ROOT)/$(PKGROOT)
-	  cp hdf5.module $(ROOT)/$(PKGROOT)/$(VERSION)
-	  cp hdf5.version $(ROOT)/$(PKGROOT)/.version.$(VERSION)
-	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
-	  perl -pi -e "s/PYV/$(PYVERSION)/g" $(ROOT)/$(PKGROOT)/$(VERSION)
-	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
-	  perl -pi -e 's/COMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
-	  perl -pi -e 's/COMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
-	  ln -s $(PKGROOT)/.version.$(VERSION) $(ROOT)/$(PKGROOT)/.version
+	mkdir -p $(ROOT)/$(PKGROOT)
+	cp hdf5.module $(ROOT)/$(PKGROOT)/$(VERSION)
+	cp hdf5.version $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/$(VERSION); \
+	perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	perl -pi -e 's/COMPILER/$(COMPILERNAME)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
+	perl -pi -e 's/COMPILER/$(COMPILERNAME)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	ln -s $(PKGROOT)/.version.$(VERSION) $(ROOT)/$(PKGROOT)/.version
+	( \
+	  $(PYSETUP); \
+	  perl -pi -e "s/PYV/$${PYVERSION}/g" $(ROOT)/$(PKGROOT)/$(VERSION) \
+	)
 
 clean::

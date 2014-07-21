@@ -56,34 +56,35 @@
 #
 # $Log$
 
-
+PKGROOT     = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 REDHAT.ROOT = $(CURDIR)/../../
-
-ifndef PYPATH
-  PYPATH = python
-endif
-PYVERSION = $(shell $(PYPATH) -c "from __future__ import print_function;import sys;print(sys.version[:3])")
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 include pull.mk
 
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-ifndef ROLLMPI
-  ROLLMPI = openmpi
-endif
-
-
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
+    if test "$${module}" != "$(ROLLCOMPILER)"; then \
+      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
+      exit 2; \
+    fi; \
     module load $(ROLLCOMPILER); \
   fi
+PYSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<opt-python\>"`; \
+    if test -z "$${module}"; then \
+      module=`module avail 2>&1 | grep -o -m1 "\<python\>"`; \
+    fi; \
+    if test -n "$${module}"; then \
+      module load $${module}; \
+    fi; \
+  fi; \
+  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`
 
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
@@ -94,6 +95,11 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
+    if test "$${module}" != "$(MPIMODULE)"; then \
+      echo *** ERROR: MPI module $(MPIMODULE) not found; \
+      exit 2; \
+    fi; \
     module load $(MPIMODULE); \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
@@ -104,22 +110,37 @@ MPISETUP = \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
+CC = gcc
+CXX = g++
+ifeq ("$(COMPILERNAME)", "intel")
+  CC = icc
+  CXX = icpc
+else ifeq ("$(COMPILERNAME)", "pgi")
+  CC = pgcc
+  CXX = pgCC
+endif
+
 build: $(SRC_DIRS)
 	@echo "::: Package $(NAME) build complete :::"
-	
+
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages
 	( \
-          . /etc/profile.d/modules.sh; \
-          export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages; \
-          export LD_LIBRARY_PATH=$(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)/lib:$${LD_LIBRARY_PATH}; \
-          export LD_LIBRARY_PATH=$${MKL_HOME}/lib/intel64:$${LD_LIBRARY_PATH}; \
-          module load intel; \
-          export CC=icc; \
-          export CXX=icpc; \
-          export CPPFLAGS="-I$(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)/include -I/opt/$(ROLLMPI)/$(ROLLCOMPILER)/$(ROLLNETWORK)/include"; \
-          export LDFLAGS=-L$(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)/lib; \
-          easy_install --prefix=$(ROOT)/$(PKGROOT) $(SOURCE_PKG) \
+	  $(COMPILERSETUP); \
+	  $(PYSETUP); \
+	  $(MPISETUP); \
+	  if test -n "$${MKL_ROOT}"; then \
+	    export MKLLIB=`find $${MKL_ROOT}/lib/* -maxdepth 0 | head -1`; \
+	    export LD_LIBRARY_PATH=$${MKLLIB}:$${LD_LIBRARY_PATH}; \
+	  fi; \
+	  export CC=$(CC); \
+	  export CXX=$(CXX); \
+	  export HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK); \
+	  export LD_LIBRARY_PATH=$${HDF5HOME}/lib:$${LD_LIBRARY_PATH}; \
+	  export CPPFLAGS="-I$${HDF5HOME}/include -I$${MPIHOME}/include"; \
+	  export LDFLAGS=-L$${HDF5HOME}/lib; \
+	  export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$${PYVERSION}/site-packages; \
+	  mkdir -p -m 755 $${PYTHONPATH}; \
+	  easy_install --install-dir=$${PYTHONPATH} $(SOURCE_PKG) \
 	)
 	@echo "::: Package $(NAME) install complete :::"
 

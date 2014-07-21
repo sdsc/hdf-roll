@@ -1,6 +1,6 @@
 NAME               = hdf4_$(ROLLCOMPILER)
 VERSION            = 2.9
-RELEASE            = 0
+RELEASE            = 1
 PKGROOT            = /opt/hdf4/$(ROLLCOMPILER)
 RPM.EXTRAS         = AutoReq:No
 

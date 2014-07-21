@@ -1,7 +1,19 @@
-NAME               = hdf5_$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+ifndef ROLLCOMPILER
+  ROLLCOMPILER = gnu
+endif
+COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+
+ifndef ROLLMPI
+  ROLLMPI = openmpi
+endif
+
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
+
+NAME               = hdf5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION            = 1.8.12
-RELEASE            = 0
-PKGROOT            = /opt/hdf5/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
+RELEASE            = 1
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = hdf5

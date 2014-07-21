@@ -147,23 +147,25 @@ SKIP: {
 foreach my $package(@PACKAGES) {
   foreach my $compiler(@COMPILERS) {
 
+    my $compilername = (split('/', $compiler))[0];
+
     SKIP: {
 
-      skip "$package/$compiler not installed", 5
-        if ! -d "/opt/$package/$compiler";
+      skip "$package/$compilername not installed", 5
+        if ! -d "/opt/$package/$compilername";
  
       MPITEST:
       foreach my $mpi(@MPIS) {
         foreach my $network(@NETWORKS) {
 
           my $subdir =
-            $package eq 'hdf4' ? "$compiler" : "$compiler/$mpi/$network";
+            $package eq 'hdf4' ? "$compilername" : "$compilername/$mpi/$network";
 
-          $output = `bash $TESTFILE.sh $compiler $mpi $network /opt/$package/$subdir $CC{$compiler} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
+          $output = `bash $TESTFILE.sh $compiler $mpi $network /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
           if( $package eq 'hdf5' ) {
-             $output=`. /etc/profile.d/modules.sh; module load scipy intel $compiler ${mpi}_${network} hdf5;python $TESTFILE.py`;
+             $output=`. /etc/profile.d/modules.sh; module load $compiler ${mpi}_${network} hdf5;python $TESTFILE.py`;
              like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with h5py");
           }
           `/bin/rm $TESTFILE.exe`;
@@ -172,12 +174,12 @@ foreach my $package(@PACKAGES) {
       }
 
       skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
-      `/bin/ls /opt/modulefiles/applications/.$compiler/$package/[0-9]* 2>&1`;
-      ok($? == 0, "$package/$compiler module installed");
-      `/bin/ls /opt/modulefiles/applications/.$compiler/$package/.version.[0-9]* 2>&1`;
-      ok($? == 0, "$package/$compiler version module installed");
-      ok(-l "/opt/modulefiles/applications/.$compiler/$package/.version",
-         "$package/$compiler version module link created");
+      `/bin/ls /opt/modulefiles/applications/.$compilername/$package/[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compilername module installed");
+      `/bin/ls /opt/modulefiles/applications/.$compilername/$package/.version.[0-9]* 2>&1`;
+      ok($? == 0, "$package/$compilername version module installed");
+      ok(-l "/opt/modulefiles/applications/.$compilername/$package/.version",
+         "$package/$compilername version module link created");
 
     }
 
