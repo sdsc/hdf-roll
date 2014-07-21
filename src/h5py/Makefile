@@ -74,6 +74,17 @@ COMPILERSETUP = \
     module load $(ROLLCOMPILER); \
   fi
 
+PYSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLPY)\>"`; \
+    if test "$${module}" != "$(ROLLPY)"; then \
+      echo *** ERROR: Python module $(ROLLPY) not found; \
+      exit 2; \
+    fi; \
+    module load $(ROLLPY); \
+  fi
+
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
 else
@@ -109,26 +120,24 @@ else ifeq ("$(COMPILERNAME)", "pgi")
 endif
 
 build: $(SRC_DIRS)
-	@echo "::: Package $(NAME) build complete :::"
-
-install::
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
-	  if test -n "$${MKL_ROOT}"; then \
-	    export MKLLIB=`find $${MKL_ROOT}/lib/* -maxdepth 0 | head -1`; \
-	    export LD_LIBRARY_PATH=$${MKLLIB}:$${LD_LIBRARY_PATH}; \
-	  fi; \
+	  $(PYSETUP); \
+	  cd $(SOURCE_DIR); \
 	  export CC=$(CC); \
 	  export CXX=$(CXX); \
-	  export HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK); \
-	  export LD_LIBRARY_PATH=$${HDF5HOME}/lib:$${LD_LIBRARY_PATH}; \
 	  export CPPFLAGS="-I$${HDF5HOME}/include -I$${MPIHOME}/include"; \
-	  export LDFLAGS=-L$${HDF5HOME}/lib; \
-	  export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages; \
-	  mkdir -p -m 755 $${PYTHONPATH}; \
+	  HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK); \
+	  python setup.py build --hdf5=$${HDF5HOME} \
+	)
+	@echo "::: Package $(NAME) build complete :::"
+
+install::
+	mkdir -p -m 755 $(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages
+	( \
+	  $(PYSETUP); \
 	  cd $(SOURCE_DIR); \
-	  python setup.py build --hdf5=${HDF5HOME}; \
 	  python setup.py install --prefix=$(ROOT)/$(PKGROOT) \
 	)
 	@echo "::: Package $(NAME) install complete :::"

@@ -21,7 +21,7 @@ endif
 
 NAME               = h5py_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)_py$(PYVERSION)
 VERSION            = 2.2.1
-RELEASE            = 2
+RELEASE            = 3
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = h5py
