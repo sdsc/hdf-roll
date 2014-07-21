@@ -11,9 +11,17 @@ ifndef ROLLNETWORK
   ROLLNETWORK = eth
 endif
 
-NAME               = h5py_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
+ifndef ROLLPY
+  ROLLPY = python
+endif
+
+ifndef PYVERSION
+  PYVERSION = 2.6
+endif
+
+NAME               = h5py_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)_py$(PYVERSION)
 VERSION            = 2.2.1
-RELEASE            = 1
+RELEASE            = 2
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = h5py

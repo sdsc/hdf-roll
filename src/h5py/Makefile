@@ -73,18 +73,6 @@ COMPILERSETUP = \
     fi; \
     module load $(ROLLCOMPILER); \
   fi
-PYSETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<opt-python\>"`; \
-    if test -z "$${module}"; then \
-      module=`module avail 2>&1 | grep -o -m1 "\<python\>"`; \
-    fi; \
-    if test -n "$${module}"; then \
-      module load $${module}; \
-    fi; \
-  fi; \
-  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`
 
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
@@ -126,7 +114,6 @@ build: $(SRC_DIRS)
 install::
 	( \
 	  $(COMPILERSETUP); \
-	  $(PYSETUP); \
 	  $(MPISETUP); \
 	  if test -n "$${MKL_ROOT}"; then \
 	    export MKLLIB=`find $${MKL_ROOT}/lib/* -maxdepth 0 | head -1`; \
@@ -138,9 +125,11 @@ install::
 	  export LD_LIBRARY_PATH=$${HDF5HOME}/lib:$${LD_LIBRARY_PATH}; \
 	  export CPPFLAGS="-I$${HDF5HOME}/include -I$${MPIHOME}/include"; \
 	  export LDFLAGS=-L$${HDF5HOME}/lib; \
-	  export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$${PYVERSION}/site-packages; \
+	  export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages; \
 	  mkdir -p -m 755 $${PYTHONPATH}; \
-	  easy_install --install-dir=$${PYTHONPATH} $(SOURCE_PKG) \
+	  cd $(SOURCE_DIR); \
+	  python setup.py build --hdf5=${HDF5HOME}; \
+	  python setup.py install --prefix=$(ROOT)/$(PKGROOT) \
 	)
 	@echo "::: Package $(NAME) install complete :::"
 

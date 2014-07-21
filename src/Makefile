@@ -66,6 +66,8 @@ default:
 
 copyright rpm pkg clean::
 	for i in $(SRCDIRS) ; do \
+	  module load $(ROLLPY); \
+	  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`; \
 	  grep -q ROLLCOMPILER $$i/version.mk; \
 	  if test $$? -eq 0; then \
 	    for c in $(ROLLCOMPILER); do \
@@ -73,16 +75,16 @@ copyright rpm pkg clean::
 	        if test $$? -eq 0; then \
 	          for m in $(ROLLMPI); do \
 	            for n in $(ROLLNETWORK); do \
-	              echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n; \
-	              (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n $@) || exit 2; \
+	              echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	              (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	            done; \
 	          done; \
 	        else \
-	          echo make $@ in $$i with ROLLCOMPILER=$$c; \
-	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c $@) || exit 2; \
+	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	        fi; \
 	    done; \
 	  else \
-	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" $@) || exit 2; \
+	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	  fi; \
 	done
