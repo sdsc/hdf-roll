@@ -1,5 +1,5 @@
 ifndef ROLLCOMPILER
-  COMPILERNAME = gnu
+  ROLLCOMPILER = gnu
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
