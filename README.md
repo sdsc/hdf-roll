@@ -27,6 +27,7 @@ Rocks development machine.
 ## Dependencies
 
 flex bison (from CentOS distribution)
+numpy (h5py dependency)
 
 
 ## Building
