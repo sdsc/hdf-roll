@@ -2,7 +2,8 @@
 
 ## Overview
 
-This roll bundles the HDF4 and HDF5 libraries.
+This roll bundles the HDF4 and HDF5 libraries and the h5py Python interface
+to HDF5.
 
 For more information about the various packages included in the hdf roll please visit their official web pages:
 
@@ -11,6 +12,8 @@ library and multi-object file format for storing and managing data between
 machines.
 - <a href="http://www.hdfgroup.org/products/hdf5" target="_blank">HDF5</a> is a
 data model, library, and file format for storing and managing data.
+- The <a href="http://www.h5py.org" target="_blank">H5PY</a> package is a
+Pythonic interface to the HDF5 binary data format.
 
 
 ## Requirements
@@ -86,6 +89,9 @@ variable that includes a space-delimited list of python modulefiles, e.g.,
 ```shell
 % make ROLLPY=opt-python
 ```
+
+The roll currently builds H5PY without MPI support, using the first compiler
+listed in any ROLLCOMPILER value.
 
 ## Installation
 
