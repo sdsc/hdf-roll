@@ -56,7 +56,7 @@
 #
 # $Log$
 
-PKGROOT     = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
+PKGROOT     = /opt/hdf5/$(COMPILERNAME)/$(FIRSTMPI)/$(FIRSTNETWORK)
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
@@ -66,29 +66,29 @@ include pull.mk
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
-    if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(FIRSTCOMPILER)\>"`; \
+    if test "$${module}" != "$(FIRSTCOMPILER)"; then \
+      echo *** ERROR: Compiler module $(FIRSTCOMPILER) not found; \
       exit 2; \
     fi; \
-    module load $(ROLLCOMPILER); \
+    module load $(FIRSTCOMPILER); \
   fi
 
 PYSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLPY)\>"`; \
-    if test "$${module}" != "$(ROLLPY)"; then \
-      echo *** ERROR: Python module $(ROLLPY) not found; \
+    module=`module avail 2>&1 | grep -m 1 -o "\<$(FIRSTPY)\>"`; \
+    if test "$${module}" != "$(FIRSTPY)"; then \
+      echo *** ERROR: Python module $(FIRSTPY) not found; \
       exit 2; \
     fi; \
-    module load $(ROLLPY); \
+    module load $(FIRSTPY); \
   fi
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
+ifeq ("$(FIRSTNETWORK)", "eth")
+  MPIMODULE = $(FIRSTMPI)
 else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
+  MPIMODULE = $(FIRSTMPI)_$(FIRSTNETWORK)
 endif
 
 MPISETUP = \
@@ -103,7 +103,7 @@ MPISETUP = \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
   if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(ROLLMPI); \
+    export MPI_HOME=/opt/$(FIRSTMPI); \
   fi; \
   echo Using MPI from $${MPI_HOME}; \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
@@ -128,7 +128,7 @@ build: $(SRC_DIRS)
 	  export CC=$(CC); \
 	  export CXX=$(CXX); \
 	  export CPPFLAGS="-I$${HDF5HOME}/include -I$${MPIHOME}/include"; \
-	  HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK); \
+	  HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK); \
 	  python setup.py build --hdf5=$${HDF5HOME} \
 	)
 	@echo "::: Package $(NAME) build complete :::"

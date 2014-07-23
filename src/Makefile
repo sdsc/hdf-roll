@@ -68,8 +68,8 @@ copyright rpm pkg clean::
 	for i in $(SRCDIRS) ; do \
 	  module load $(ROLLPY); \
 	  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`; \
-	  grep -q ROLLCOMPILER $$i/version.mk; \
-	  if test $$? -eq 0; then \
+	  if test `grep -c "\<NAME.*COMPILER" $$i/version.mk` -gt 0 -a \
+	          `grep -c FIRSTCOMPILER $$i/version.mk` -eq 0; then \
 	    for c in $(ROLLCOMPILER); do \
 	        grep -q ROLLMPI $$i/version.mk; \
 	        if test $$? -eq 0; then \
@@ -85,6 +85,7 @@ copyright rpm pkg clean::
 	        fi; \
 	    done; \
 	  else \
+	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
 	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	  fi; \
 	done
