@@ -129,8 +129,8 @@ install::
 	)
 	umount $(PKGROOT)
 	-rmdir -p $(PKGROOT)
-	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
-	cp -r $(ROOT)/$(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
+	cp -r $(ROOT)/$(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::

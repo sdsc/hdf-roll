@@ -58,7 +58,7 @@
 # $Log$
 #
 
-PKGROOT = /opt/modulefiles/applications/.$(ROLLCOMPILER)/hdf5
+PKGROOT = /opt/modulefiles/applications/.$(COMPILERNAME)/hdf5
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
