@@ -166,7 +166,7 @@ foreach my $package(@PACKAGES) {
           $output = `bash $TESTFILE.sh $compiler $mpi $network /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
-          if( $package eq 'hdf5' ) {
+          if( $package eq 'hdf5' && $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
              $output=`. /etc/profile.d/modules.sh; module load $compiler ${mpi}_${network} hdf5 $python;python $TESTFILE.py`;
              like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with h5py");
           }
