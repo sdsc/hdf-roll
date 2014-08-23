@@ -13,7 +13,7 @@ endif
 
 NAME               = hdf5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION            = 1.8.12
-RELEASE            = 1
+RELEASE            = 2
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = hdf5

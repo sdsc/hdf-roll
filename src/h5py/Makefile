@@ -63,52 +63,6 @@ REDHAT.ROOT = $(CURDIR)/../../
 include Rules.mk
 include pull.mk
 
-COMPILERSETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(FIRSTCOMPILER)\>"`; \
-    if test "$${module}" != "$(FIRSTCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(FIRSTCOMPILER) not found; \
-      exit 2; \
-    fi; \
-    module load $(FIRSTCOMPILER); \
-  fi
-
-PYSETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(FIRSTPY)\>"`; \
-    if test "$${module}" != "$(FIRSTPY)"; then \
-      echo *** ERROR: Python module $(FIRSTPY) not found; \
-      exit 2; \
-    fi; \
-    module load $(FIRSTPY); \
-  fi
-
-ifeq ("$(FIRSTNETWORK)", "eth")
-  MPIMODULE = $(FIRSTMPI)
-else
-  MPIMODULE = $(FIRSTMPI)_$(FIRSTNETWORK)
-endif
-
-MPISETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
-    if test "$${module}" != "$(MPIMODULE)"; then \
-      echo *** ERROR: MPI module $(MPIMODULE) not found; \
-      exit 2; \
-    fi; \
-    module load $(MPIMODULE); \
-  fi; \
-  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
-  if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(FIRSTMPI); \
-  fi; \
-  echo Using MPI from $${MPI_HOME}; \
-  export PATH=$${PATH}:$${MPI_HOME}/bin; \
-  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
-
 CC = gcc
 CXX = g++
 ifeq ("$(COMPILERNAME)", "intel")
@@ -119,6 +73,41 @@ else ifeq ("$(COMPILERNAME)", "pgi")
   CXX = pgCC
 endif
 
+COMPILERSETUP =  \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(ROLLCOMPILER) || true; \
+  fi; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
+
+ifeq ("$(FIRSTNETWORK)", "eth")
+  MPIMODULE = $(FIRSTMPI)
+else
+  MPIMODULE = $(FIRSTMPI)_$(FIRSTNETWORK)
+endif
+
+MPISETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(MPIMODULE) || true; \
+  fi; \
+  if test -z "$${MPIHOME}"; then \
+    export MPIHOME=/opt/$(ROLLMPI); \
+  fi; \
+  echo === MPIHOME ===; \
+  echo $${MPIHOME} \
+
+PYSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(FIRSTPY) || true; \
+  fi; \
+  echo === Python and version ===; \
+  echo `which python; python --version`
+
+HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK)
+
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
@@ -127,9 +116,8 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  export CC=$(CC); \
 	  export CXX=$(CXX); \
-	  export CPPFLAGS="-I$${HDF5HOME}/include -I$${MPIHOME}/include"; \
-	  HDF5HOME=$(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK); \
-	  python setup.py build --hdf5=$${HDF5HOME} \
+	  export CPPFLAGS="-I$(HDF5_CACHE)/include -I$${MPIHOME}/include"; \
+	  python setup.py build --hdf5=$(HDF5_CACHE) \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 

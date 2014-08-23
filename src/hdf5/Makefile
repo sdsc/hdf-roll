@@ -63,16 +63,22 @@ REDHAT.ROOT = $(CURDIR)/../../
 include Rules.mk
 include pull.mk
 
-COMPILERSETUP = \
+CC = gcc
+MPICC = mpicc
+MPIF90 = mpif90
+ifeq ("$(COMPILERNAME)", "intel")
+  CC = icc
+else ifeq ("$(COMPILERNAME)", "pgi")
+  CC = pgcc
+endif
+
+COMPILERSETUP =  \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
-    if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
-      exit 2; \
-    fi; \
-    module load $(ROLLCOMPILER); \
-  fi
+    module load $(ROLLCOMPILER) || true; \
+  fi; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
 
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
@@ -83,30 +89,22 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
-    if test "$${module}" != "$(MPIMODULE)"; then \
-      echo *** ERROR: MPI module $(MPIMODULE) not found; \
-      exit 2; \
-    fi; \
-    module load $(MPIMODULE); \
+    module load $(MPIMODULE) || true; \
   fi; \
-  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
-  if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(ROLLMPI); \
+  if test -z "$${MPIHOME}"; then \
+    export MPIHOME=/opt/$(ROLLMPI); \
   fi; \
-  echo Using MPI from $${MPI_HOME}; \
-  export PATH=$${PATH}:$${MPI_HOME}/bin; \
-  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
+  echo === MPIHOME ===; \
+  echo $${MPIHOME} \
 
-CCOMP = mpicc
-FCOMP = mpif90
+HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
-	  export CC=$(CCOMP); \
-	  export FC=$(FCOMP);\
+	  export CC=$(MPICC); \
+	  export FC=$(MPIF90);\
 	  cd $(SOURCE_DIR); \
 	  ./configure \
 	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
@@ -117,20 +115,16 @@ build: $(SRC_DIRS)
 	
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
-	-mkdir -p -m 755 $(PKGROOT)
-	mount --bind  $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
-	  export CC=$(CCOMP); \
-	  export FC=$(FCOMP); \
-	  $(MAKE) install \
+	  export CC=$(MPICC); \
+	  export FC=$(MPIF90); \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install \
 	)
-	umount $(PKGROOT)
-	-rmdir -p $(PKGROOT)
-	mkdir -p $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
-	cp -r $(ROOT)/$(PKGROOT)/* $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
+	mkdir -p -m 755 $(HDF5_CACHE)
+	cp -r $(ROOT)/$(PKGROOT)/* $(HDF5_CACHE)/
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::

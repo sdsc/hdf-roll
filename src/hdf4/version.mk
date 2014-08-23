@@ -5,8 +5,7 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 NAME               = hdf4_$(COMPILERNAME)
 VERSION            = 2.9
-RELEASE            = 1
-PKGROOT            = /opt/hdf4/$(COMPILERNAME)
+RELEASE            = 2
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = hdf4

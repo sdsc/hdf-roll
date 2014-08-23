@@ -25,7 +25,7 @@ endif
 
 NAME               = h5py_$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK)_py$(PYVERSION)
 VERSION            = 2.2.1
-RELEASE            = 3
+RELEASE            = 4
 RPM.EXTRAS         = AutoReq:No
 
 SRC_SUBDIR         = h5py

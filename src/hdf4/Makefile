@@ -56,52 +56,47 @@
 #
 # $Log$
 
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-
 REDHAT.ROOT = $(CURDIR)/../../
+PKGROOT = /opt/hdf4/$(COMPILERNAME)
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 include pull.mk
 
-COMPILERSETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -m 1 -o "\<$(ROLLCOMPILER)\>"`; \
-    if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
-      exit 2; \
-    fi; \
-    module load $(ROLLCOMPILER); \
-  fi
-
-CCOMP = gcc
-FCOMP = gfortran
+CC = gcc
 COMPILE_FLAGS = -O2 -g
-ifeq ("$(ROLLCOMPILER)", "intel")
-  CCOMP = icc
-  FCOMP = ifort
+FC = gfortran
+ifeq ("$(COMPILERNAME)", "intel")
+  CC = icc
   COMPILE_FLAGS = -xHOST -O2
-else ifeq ("$(ROLLCOMPILER)", "pgi")
-  CCOMP = pgcc
-  FCOMP = pgf90
+  FC = ifort
+else ifeq ("$(COMPILERNAME)", "pgi")
+  CC = pgcc
   COMPILE_FLAGS = -fast
+  FC = pgf90
 endif
+
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifeq ("$(ROLLCOMPILER)", "gnu")
+  ifeq ("$(COMPILERNAME)", "gnu")
     COMPILE_FLAGS += -mavx
   endif
 endif
 
+COMPILERSETUP =  \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(ROLLCOMPILER) || true; \
+  fi; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
+
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
-	  export CC=$(CCOMP); \
-	  export F77=$(FCOMP);\
-          export CFLAGS="$(COMPILE_FLAGS)"; \
-          export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export CC=$(CC); \
+	  export F77=$(FC);\
+	  export CFLAGS="$(COMPILE_FLAGS)"; \
+	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
 	  tar xvzf ../$(ZLIB_PKG); \
 	  cd zlib-*; \
@@ -121,8 +116,8 @@ install::
 	mkdir -p $(ROOT)/$(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
-	  export CC=$(CCOMP); \
-	  export FC=$(FCOMP);  \
+	  export CC=$(CC); \
+	  export FC=$(FC);  \
 	  cd $(SOURCE_DIR); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	)
