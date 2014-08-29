@@ -56,7 +56,6 @@
 #
 # $Log$
 
-PKGROOT = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk

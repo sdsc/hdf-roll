@@ -14,7 +14,8 @@ ifndef ROLLPY
   ROLLPY = python
 endif
 
-NAME	= hdf-roll-test
-VERSION	= 1
-RELEASE	= 2
-RPM.EXTRAS         = AutoReq:No
+NAME       = hdf-roll-test
+VERSION    = 1
+RELEASE    = 2
+
+RPM.EXTRAS = AutoReq:No
