@@ -25,7 +25,7 @@ endif
 
 NAME           = h5py_$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK)_py$(PYVERSION)
 VERSION        = 2.2.1
-RELEASE        = 4
+RELEASE        = 5
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(FIRSTMPI)/$(FIRSTNETWORK)
 
 SRC_SUBDIR     = h5py

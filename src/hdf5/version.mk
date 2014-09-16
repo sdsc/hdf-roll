@@ -13,7 +13,7 @@ endif
 
 NAME           = hdf5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION        = 1.8.12
-RELEASE        = 2
+RELEASE        = 3
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR     = hdf5

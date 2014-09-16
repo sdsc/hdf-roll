@@ -129,21 +129,12 @@ close(OUT);
 open(OUT, ">$TESTFILE.sh");
 print OUT <<END;
 #!/bin/bash
-if test -f /etc/profile.d/modules.sh; then
-  . /etc/profile.d/modules.sh
-  module load \$1 \${2}_\$3
-fi
+module load \$1 \${2}_\$3
 export LD_LIBRARY_PATH=\$4/lib:\$LD_LIBRARY_PATH
 \$5 -I \$4/include -I \${MPIHOME}/include -o $TESTFILE.exe \$6 -L \$4/lib \$7
 ./$TESTFILE.exe
 END
 close(OUT);
-
-# hdf-doc.xml
-SKIP: {
-  skip 'not server', 1 if $appliance ne 'Frontend';
-  ok(-d '/var/www/html/roll-documentation/hdf', 'doc installed');
-}
 
 # hdf-common.xml
 foreach my $package(@PACKAGES) {
@@ -167,7 +158,7 @@ foreach my $package(@PACKAGES) {
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
           if( $package eq 'hdf5' && $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
-             $output=`. /etc/profile.d/modules.sh; module load $compiler ${mpi}_${network} hdf5 $python;python $TESTFILE.py`;
+             $output=`module load $compiler ${mpi}_${network} hdf5 $python;python $TESTFILE.py`;
              like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with h5py");
           }
           `/bin/rm $TESTFILE.exe`;
@@ -175,7 +166,6 @@ foreach my $package(@PACKAGES) {
         }
       }
 
-      skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
       `/bin/ls /opt/modulefiles/applications/.$compilername/$package/[0-9]* 2>&1`;
       ok($? == 0, "$package/$compilername module installed");
       `/bin/ls /opt/modulefiles/applications/.$compilername/$package/.version.[0-9]* 2>&1`;
