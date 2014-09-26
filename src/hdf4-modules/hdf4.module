@@ -2,8 +2,8 @@
 module-whatis "hdf4"
 module-whatis "Version: VERSION"
 module-whatis "Description: hdf4"
-module-whatis "Compiler: COMPILER"
-set hdf4Home /opt/hdf4/COMPILER
+module-whatis "Compiler: ROLLCOMPILER"
+set hdf4Home /opt/hdf4/COMPILERNAME
 setenv HDF4HOME $hdf4Home
 prepend-path PATH $hdf4Home/bin
 prepend-path LD_LIBRARY_PATH $hdf4Home/lib

@@ -3,7 +3,7 @@ if {! [info exists ::env(MPIHOME)]} {
   puts stderr "Need to load an mpi module before loading hdf5"
   exit 1
 }
-foreach {x} [glob -directory /opt/hdf5/COMPILER -tails *] {
+foreach {x} [glob -directory /opt/hdf5/COMPILERNAME -tails *] {
   if {[regexp $x $::env(MPIHOME)]} {
     set mpi $x
     break
@@ -18,7 +18,7 @@ if {! [info exists mpi]} {
   puts stderr "No supported MPI flavor found"
   exit 1
 }
-foreach {x} [glob -directory /opt/hdf5/COMPILER/$mpi -tails *] {
+foreach {x} [glob -directory /opt/hdf5/COMPILERNAME/$mpi -tails *] {
   if {[regexp $x $::env(MPIHOME)]} {
     set network $x
     break
@@ -36,11 +36,12 @@ if {! [info exists network]} {
 module-whatis "hdf5"
 module-whatis "Version: VERSION"
 module-whatis "Description: hdf5"
-module-whatis "Compiler: COMPILER"
+module-whatis "Compiler: ROLLCOMPILER"
 module-whatis "MPI: $mpi $network"
-set hdf5Home /opt/hdf5/COMPILER/$mpi/$network
+set hdf5Home /opt/hdf5/COMPILERNAME/$mpi/$network
 setenv HDF5HOME $hdf5Home
 prepend-path PATH $hdf5Home/bin
 prepend-path LD_LIBRARY_PATH $hdf5Home/lib
 prepend-path LIBPATH $hdf5Home/lib
-prepend-path PYTHONPATH $hdf5Home/lib/pythonPYV/site-packages
+set lib [glob -nocomplain $hdf5Home/lib/python*/site-packages]
+prepend-path PYTHONPATH $lib
