@@ -7,11 +7,14 @@ ifndef PYVERSION
   PYVERSION = 2.6
 endif
 
-NAME        = hdf5-modules_$(COMPILERNAME)
-RELEASE     = 3
-PKGROOT     = /opt/modulefiles/applications/.$(COMPILERNAME)/hdf5
+PACKAGE     = hdf5
+CATEGORY    = applications
 
-VERSION_SRC = $(REDHAT.ROOT)/src/hdf5/version.mk
+NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
+RELEASE     = 4
+PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
+
+VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
 VERSION_INC = version.inc
 include $(VERSION_INC)
 

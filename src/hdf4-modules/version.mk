@@ -3,11 +3,14 @@ ifndef ROLLCOMPILER
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-NAME        = hdf4-modules_$(COMPILERNAME)
-RELEASE     = 2
-PKGROOT     = /opt/modulefiles/applications/.$(COMPILERNAME)/hdf4
+PACKAGE     = hdf4
+CATEGORY    = applications
 
-VERSION_SRC = $(REDHAT.ROOT)/src/hdf4/version.mk
+NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
+RELEASE     = 3
+PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
+
+VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
 VERSION_INC = version.inc
 include $(VERSION_INC)
 
