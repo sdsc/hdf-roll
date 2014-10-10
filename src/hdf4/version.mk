@@ -4,8 +4,8 @@ endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 NAME           = hdf4_$(COMPILERNAME)
-VERSION        = 2.9
-RELEASE        = 3
+VERSION        = 2.10
+RELEASE        = 0
 PKGROOT        = /opt/hdf4/$(COMPILERNAME)
 
 SRC_SUBDIR     = hdf4

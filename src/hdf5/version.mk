@@ -12,8 +12,8 @@ ifndef ROLLNETWORK
 endif
 
 NAME           = hdf5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
-VERSION        = 1.8.12
-RELEASE        = 3
+VERSION        = 1.8.13
+RELEASE        = 0
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR     = hdf5
