@@ -77,14 +77,8 @@ COMPILERSETUP =  \
   echo === Compiler and version ===; \
   $(CC) --version \
 
-ifeq ("$(FIRSTNETWORK)", "eth")
-  MPIMODULE = $(FIRSTMPI)
-else
-  MPIMODULE = $(FIRSTMPI)_$(FIRSTNETWORK)
-endif
-
 MPISETUP = \
-  module load $(MPIMODULE) || true; \
+  module load $(FIRSTMPI) || true; \
   echo === MPIHOME ===; \
   echo $${MPIHOME} \
 
@@ -93,7 +87,7 @@ PYSETUP = \
   echo === Python and version ===; \
   echo `which python; python --version`
 
-HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK)
+HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
 build: $(SRC_DIRS)
 	( \

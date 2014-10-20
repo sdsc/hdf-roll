@@ -4,17 +4,14 @@ endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 ifndef ROLLMPI
-  ROLLMPI = openmpi
+  ROLLMPI = rocks-openmpi
 endif
+MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-
-NAME           = hdf5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
+NAME           = hdf5_$(COMPILERNAME)_$(MPINAME)
 VERSION        = 1.8.13
-RELEASE        = 0
-PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
+RELEASE        = 1
+PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = hdf5
 

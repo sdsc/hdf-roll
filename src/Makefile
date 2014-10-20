@@ -74,10 +74,8 @@ copyright rpm pkg clean::
 	        grep -q ROLLMPI $$i/version.mk; \
 	        if test $$? -eq 0; then \
 	          for m in $(ROLLMPI); do \
-	            for n in $(ROLLNETWORK); do \
-	              echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	              (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLNETWORK=$$n ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
-	            done; \
+	            echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	            (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	          done; \
 	        else \
 	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
@@ -85,7 +83,7 @@ copyright rpm pkg clean::
 	        fi; \
 	    done; \
 	  else \
-	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLNETWORK="$(ROLLNETWORK)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	  fi; \
 	done

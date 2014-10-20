@@ -5,14 +5,10 @@ FIRSTCOMPILER = $(firstword $(ROLLCOMPILER))
 COMPILERNAME := $(firstword $(subst /, ,$(FIRSTCOMPILER)))
 
 ifndef ROLLMPI
-  ROLLMPI = eth
+  ROLLMPI = rocks-openmpi
 endif
 FIRSTMPI = $(firstword $(ROLLMPI))
-
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-FIRSTNETWORK = $(firstword $(ROLLNETWORK))
+MPINAME := $(firstword $(subst /, ,$(FIRSTMPI)))
 
 ifndef ROLLPY
   ROLLPY = python
@@ -23,10 +19,10 @@ ifndef PYVERSION
   PYVERSION = 2.6
 endif
 
-NAME           = h5py_$(COMPILERNAME)_$(FIRSTMPI)_$(FIRSTNETWORK)_py$(PYVERSION)
+NAME           = h5py_$(COMPILERNAME)_$(MPINAME)_py$(PYVERSION)
 VERSION        = 2.3.1
-RELEASE        = 0
-PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(FIRSTMPI)/$(FIRSTNETWORK)
+RELEASE        = 1
+PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = h5py
 

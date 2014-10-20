@@ -11,7 +11,7 @@ PACKAGE     = hdf5
 CATEGORY    = applications
 
 NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
-RELEASE     = 4
+RELEASE     = 5
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk

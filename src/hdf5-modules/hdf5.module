@@ -1,44 +1,26 @@
 #%Module1.0
-if {! [info exists ::env(MPIHOME)]} {
-  puts stderr "Need to load an mpi module before loading hdf5"
+module-whatis "hdf5"
+module-whatis "Version: VERSION"
+module-whatis "Description: hdf5"
+module-whatis "Compiler: COMPILERNAME"
+module-whatis "MPI Flavors: ROLLMPI"
+if {! [info exists ::env(MPIHOME)] || ! [info exists ::env(LOADEDMODULES)]} {
+  puts stderr "Need to load an mpi module before loading fftw/VERSION"
   exit 1
 }
-foreach {x} [glob -directory /opt/hdf5/COMPILERNAME -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
+foreach {x} [list ROLLMPI] {
+  # Look for flavor in LOADEDMODULES, delimited by colon or end of string.
+  # Can also be followed by / (version number).
+  if {[regexp [format {[:^]%s[:/$]} $x] $::env(LOADEDMODULES)]} {
     set mpi $x
     break
-  }
-}
-if {! [info exists mpi]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
-      set mpi vsmp
   }
 }
 if {! [info exists mpi]} {
   puts stderr "No supported MPI flavor found"
   exit 1
 }
-foreach {x} [glob -directory /opt/hdf5/COMPILERNAME/$mpi -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
-    set network $x
-    break
-  }
-}
-if {! [info exists network]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
-      set network ib
-  }
-}
-if {! [info exists network]} {
-  puts stderr "No supported network found"
-  exit 1
-}
-module-whatis "hdf5"
-module-whatis "Version: VERSION"
-module-whatis "Description: hdf5"
-module-whatis "Compiler: ROLLCOMPILER"
-module-whatis "MPI: $mpi $network"
-set hdf5Home /opt/hdf5/COMPILERNAME/$mpi/$network
+set hdf5Home /opt/hdf5/COMPILERNAME/$mpi
 setenv HDF5HOME $hdf5Home
 prepend-path PATH $hdf5Home/bin
 prepend-path LD_LIBRARY_PATH $hdf5Home/lib
