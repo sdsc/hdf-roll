@@ -65,9 +65,11 @@ include pull.mk
 CC = gcc
 COMPILE_FLAGS = -O2 -g
 FC = gfortran
+# NOTE: -O2 w/2015 icc crashes compiler
+# See https://software.intel.com/en-us/forums/topic/490087
 ifeq ("$(COMPILERNAME)", "intel")
   CC = icc
-  COMPILE_FLAGS = -xHOST -O2
+  COMPILE_FLAGS = -xHOST -O0
   FC = ifort
 else ifeq ("$(COMPILERNAME)", "pgi")
   CC = pgcc
@@ -104,7 +106,7 @@ build: $(SRC_DIRS)
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
 	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib; \
-	  $(MAKE); \
+	  $(MAKE) CFLAGS="$(COMPILE_FLAGS)" FFLAGS="$(COMPILE_FLAGS)"; \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 	
