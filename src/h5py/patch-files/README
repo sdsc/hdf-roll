@@ -1,0 +1,3 @@
+api_compat.h.patch
+  Fix for h5py compilation error
+  See https://github.com/h5py/h5py/issues/439

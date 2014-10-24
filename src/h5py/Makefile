@@ -73,7 +73,7 @@ else ifeq ("$(COMPILERNAME)", "pgi")
 endif
 
 COMPILERSETUP =  \
-  module load $(ROLLCOMPILER) || true; \
+  module load $(FIRSTCOMPILER) || true; \
   echo === Compiler and version ===; \
   $(CC) --version \
 
@@ -90,13 +90,14 @@ PYSETUP = \
 HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
 build: $(SRC_DIRS)
+	patch $(SOURCE_DIR)/h5py/api_compat.h patch-files/api_compat.h.patch
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  $(PYSETUP); \
 	  cd $(SOURCE_DIR); \
-	  export CC=$(CC); \
-	  export CXX=$(CXX); \
+	  export CC=mpicc; \
+	  export CXX=mpicxx; \
 	  export CPPFLAGS="-I$(HDF5_CACHE)/include -I$${MPIHOME}/include"; \
 	  python setup.py build --hdf5=$(HDF5_CACHE) \
 	)
