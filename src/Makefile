@@ -74,16 +74,16 @@ copyright rpm pkg clean::
 	        grep -q ROLLMPI $$i/version.mk; \
 	        if test $$? -eq 0; then \
 	          for m in $(ROLLMPI); do \
-	            echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	            (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	            echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) VENDOR=$(VENDOR) PYVERSION=$${PYVERSION}; \
+	            (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	          done; \
 	        else \
-	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLPY=$(ROLLPY) VENDOR=$(VENDOR) PYVERSION=$${PYVERSION}; \
+	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	        fi; \
 	    done; \
 	  else \
-	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY=$(ROLLPY) VENDOR=$(VENDOR) PYVERSION=$${PYVERSION}; \
+	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	  fi; \
 	done

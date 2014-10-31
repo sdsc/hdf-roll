@@ -93,7 +93,7 @@ default:
 	  done; \
 	  perl -pi -e '$$_ = "" if m/COMPILERNAME|MPINAME|PYVERSION/' $$o; \
 	done
-	$(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" roll
+	$(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" roll
 
 clean::
 	rm -f _arch bootstrap.py
