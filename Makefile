@@ -55,6 +55,10 @@
 # 
 # @Copyright@
 
+ifndef VENDOR
+  VENDOR = SDSC HPC Group
+endif
+
 ifndef ROLLCOMPILER
   ROLLCOMPILER = gnu
 endif
