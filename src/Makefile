@@ -65,25 +65,23 @@ default:
 	@echo "copyright|rpm|pkg|clean"
 
 copyright rpm pkg clean::
+	module load $(ROLLPY); \
+	export PYVERSION=`python --version 2>&1 | perl -ne 'print $$1 if /(\d+\.\d+)/'`; \
 	for i in $(SRCDIRS) ; do \
-	  module load $(ROLLPY); \
-	  export PYVERSION=`python -c "from __future__ import print_function;import sys;print(sys.version[:3])"`; \
-	  if test `grep -c "\<NAME.*COMPILER" $$i/version.mk` -gt 0 -a \
-	          `grep -c FIRSTCOMPILER $$i/version.mk` -eq 0; then \
+	  if grep -q '\<NAME.*=.*COMPILERNAME' $$i/version.mk; then \
 	    for c in $(ROLLCOMPILER); do \
-	        grep -q ROLLMPI $$i/version.mk; \
-	        if test $$? -eq 0; then \
-	          for m in $(ROLLMPI); do \
-	            echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	            (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
-	          done; \
-	        else \
-	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
-	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
-	        fi; \
+	      if grep -q "\<NAME.*=.*MPINAME" $$i/version.mk; then \
+	        for m in $(ROLLMPI); do \
+	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	        done; \
+	      else \
+	        echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	        (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
+	      fi; \
 	    done; \
 	  else \
-	    echo make $@ in $$i with ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
+	    echo make $@ in $$i with ROLLCOMPILER=$(ROLLCOMPILER) ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION}; \
 	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} $@) || exit 2; \
 	  fi; \
 	done

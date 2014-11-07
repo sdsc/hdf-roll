@@ -6,8 +6,8 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 PACKAGE     = hdf4
 CATEGORY    = applications
 
-NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
-RELEASE     = 3
+NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)
+RELEASE     = 4
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk

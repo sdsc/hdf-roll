@@ -10,8 +10,8 @@ endif
 PACKAGE     = hdf5
 CATEGORY    = applications
 
-NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
-RELEASE     = 5
+NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)
+RELEASE     = 6
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk

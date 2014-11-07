@@ -3,9 +3,9 @@ ifndef ROLLCOMPILER
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-NAME           = hdf4_$(COMPILERNAME)
+NAME           = sdsc-hdf4_$(COMPILERNAME)
 VERSION        = 2.10
-RELEASE        = 0
+RELEASE        = 1
 PKGROOT        = /opt/hdf4/$(COMPILERNAME)
 
 SRC_SUBDIR     = hdf4

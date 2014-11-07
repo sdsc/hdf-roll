@@ -1,27 +1,24 @@
 ifndef ROLLCOMPILER
   ROLLCOMPILER = gnu
 endif
-FIRSTCOMPILER = $(firstword $(ROLLCOMPILER))
-COMPILERNAME := $(firstword $(subst /, ,$(FIRSTCOMPILER)))
+COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 ifndef ROLLMPI
   ROLLMPI = rocks-openmpi
 endif
-FIRSTMPI = $(firstword $(ROLLMPI))
-MPINAME := $(firstword $(subst /, ,$(FIRSTMPI)))
+MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
 ifndef ROLLPY
   ROLLPY = python
 endif
-FIRSTPY = $(firstword $(ROLLPY))
 
 ifndef PYVERSION
   PYVERSION = 2.6
 endif
 
-NAME           = h5py_$(COMPILERNAME)_$(MPINAME)_py$(PYVERSION)
+NAME           = sdsc-h5py_py$(PYVERSION)
 VERSION        = 2.3.1
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = h5py

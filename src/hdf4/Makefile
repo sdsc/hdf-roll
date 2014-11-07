@@ -60,21 +60,16 @@ REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
-include pull.mk
+include $(SDSCDEVEL)/Pull.mk
+include $(SDSCDEVEL)/Rules.mk
 
-CC = gcc
 COMPILE_FLAGS = -O2 -g
-FC = gfortran
 # NOTE: -O2 w/2015 icc crashes compiler
 # See https://software.intel.com/en-us/forums/topic/490087
 ifeq ("$(COMPILERNAME)", "intel")
-  CC = icc
   COMPILE_FLAGS = -xHOST -O0
-  FC = ifort
 else ifeq ("$(COMPILERNAME)", "pgi")
-  CC = pgcc
   COMPILE_FLAGS = -fast
-  FC = pgf90
 endif
 
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
@@ -83,14 +78,26 @@ ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   endif
 endif
 
-COMPILERSETUP =  \
-  module load $(ROLLCOMPILER) || true; \
-  echo === Compiler and version ===; \
-  $(CC) --version \
+LICENSE_FILES = $(SOURCE_DIR)/COPYING
+
+$(NAME).spec: DESCRIPTION LICENSE
+
+DESCRIPTION:
+	$(MODULE_LOAD_CC); \
+	( \
+	  $(DESCRIBE_PKG); \
+	  $(DESCRIBE_CC) \
+	) > $@
+
+LICENSE: $(SRC_DIRS)
+	if ! grep -q "Copyright.*by The HDF Group" $(LICENSE_FILES); then \
+	  exit 2; \
+	fi
+	echo -e 'HDF Group' > $@
 
 build: $(SRC_DIRS)
 	( \
-	  $(COMPILERSETUP); \
+	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export F77=$(FC);\
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
@@ -113,14 +120,15 @@ build: $(SRC_DIRS)
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)
 	( \
-	  $(COMPILERSETUP); \
+	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export FC=$(FC);  \
 	  cd $(SOURCE_DIR); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	)
+	$(INSTALL_LICENSE_FILES)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
-	rm -rf $(SOURCE_DIR)
+	rm -rf $(SOURCE_DIR) DESCRIPTION LICENSE
 

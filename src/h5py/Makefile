@@ -60,41 +60,43 @@ REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
-include pull.mk
+include $(SDSCDEVEL)/Pull.mk
+include $(SDSCDEVEL)/Rules.mk
 
-CC = gcc
-CXX = g++
-ifeq ("$(COMPILERNAME)", "intel")
-  CC = icc
-  CXX = icpc
-else ifeq ("$(COMPILERNAME)", "pgi")
-  CC = pgcc
-  CXX = pgCC
-endif
+# We only build h5py once, using the first compiler and MPI flavor
+FIRSTCOMPIER := $(firstword $(ROLLCOMPILER))
+override ROLLCOMPILER = $(FIRSTCOMPILER)
+FIRSTMPI := $(firstword $(ROLLMPI))
+override ROLLMPI = $(FIRSTMPI)
 
-COMPILERSETUP =  \
-  module load $(FIRSTCOMPILER) || true; \
-  echo === Compiler and version ===; \
-  $(CC) --version \
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
-MPISETUP = \
-  module load $(FIRSTMPI) || true; \
-  echo === MPIHOME ===; \
-  echo $${MPIHOME} \
+LICENSE_FILES = $(SOURCE_DIR)/licenses/*.txt
 
-PYSETUP = \
-  module load $(FIRSTPY) || true; \
-  echo === Python and version ===; \
-  echo `which python; python --version`
+$(NAME).spec: DESCRIPTION LICENSE
 
-HDF5_CACHE = $(REDHAT.ROOT)/src/build-hdf5-$(COMPILERNAME)_$(MPINAME)
+DESCRIPTION:
+	$(MODULE_LOAD_CC); \
+	$(MODULE_LOAD_PYTHON); \
+	( \
+	  $(DESCRIBE_PKG); \
+	  $(DESCRIBE_CC); \
+	  $(DESCRIBE_MPI); \
+	  $(DESCRIBE_PYTHON) \
+	) > $@
+
+LICENSE: $(SRC_DIRS)
+	if ! grep -q "2013 Andrew Collette" $(SOURCE_DIR)/licenses/license.txt; then \
+	  exit 2; \
+	fi
+	echo BSD > $@
 
 build: $(SRC_DIRS)
 	patch $(SOURCE_DIR)/h5py/api_compat.h patch-files/api_compat.h.patch
 	( \
-	  $(COMPILERSETUP); \
-	  $(MPISETUP); \
-	  $(PYSETUP); \
+	  $(MODULE_LOAD_CC); \
+	  $(MODULE_LOAD_MPI); \
+	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
 	  export CC=mpicc; \
 	  export CXX=mpicxx; \
@@ -106,12 +108,13 @@ build: $(SRC_DIRS)
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages
 	( \
-	  $(PYSETUP); \
+	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
 	  python setup.py install --prefix=$(ROOT)/$(PKGROOT) \
 	)
+	$(INSTALL_LICENSE_FILES)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
-	rm -rf $(SOURCE_DIR)
+	rm -rf $(SOURCE_DIR) DESCRIPTION LICENSE
 

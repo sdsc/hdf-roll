@@ -8,9 +8,9 @@ ifndef ROLLMPI
 endif
 MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-NAME           = hdf5_$(COMPILERNAME)_$(MPINAME)
+NAME           = sdsc-hdf5_$(COMPILERNAME)_$(MPINAME)
 VERSION        = 1.8.13
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = hdf5
