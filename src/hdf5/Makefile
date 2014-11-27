@@ -63,6 +63,21 @@ include Rules.mk
 include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
 
+AVX_FLAG=
+ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx2
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xcore-avx2
+  endif
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xavx
+  endif
+endif
+
 HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
 LICENSE_FILES = $(SOURCE_DIR)/COPYING
@@ -89,11 +104,14 @@ build: $(SRC_DIRS)
 	  $(MODULE_LOAD_MPI); \
 	  export CC=mpicc; \
 	  export FC=mpif90;\
+	  export CFLAGS="-fPIC $(AVX_FLAG)"; \
+          export FCFLAGS="-fPIC $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
 	  ./configure \
-	    --prefix=$(PKGROOT) --enable-production --enable-fortran \
-	    --enable-shared --enable-static --enable-parallel; \
-	  $(MAKE) CFLAGS=-fPIC FCFLAGS=-fPIC \
+            --host=`bash bin/config.guess` \
+	   --prefix=$(PKGROOT) --enable-production --enable-fortran \
+	   --enable-shared --enable-static --enable-parallel; \
+	  $(MAKE)  \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 	

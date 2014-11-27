@@ -56,25 +56,36 @@
 #
 # $Log$
 
-REDHAT.ROOT = $(CURDIR)/../../
 
--include $(ROCKSROOT)/etc/Rules.mk
-include Rules.mk
+REDHAT.ROOT = $(CURDIR)/../../
+RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
+
+include $(ROCKSROOT)/etc/Rules.mk
 include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
 
+ROLLCOMPILER=intel
 COMPILE_FLAGS = -O2 -g
 # NOTE: -O2 w/2015 icc crashes compiler
 # See https://software.intel.com/en-us/forums/topic/490087
 ifeq ("$(COMPILERNAME)", "intel")
-  COMPILE_FLAGS = -xHOST -O0
+  COMPILE_FLAGS = -O0
 else ifeq ("$(COMPILERNAME)", "pgi")
   COMPILE_FLAGS = -fast
 endif
 
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+AVX_FLAG=
+ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
   ifeq ("$(COMPILERNAME)", "gnu")
-    COMPILE_FLAGS += -mavx
+    AVX_FLAG = -mavx2
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xcore-avx2
+  endif
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xavx
   endif
 endif
 
@@ -83,7 +94,7 @@ LICENSE_FILES = $(SOURCE_DIR)/COPYING
 $(NAME).spec: DESCRIPTION LICENSE
 
 DESCRIPTION:
-	$(MODULE_LOAD_CC); \
+	$(COMPILERSETUP); \
 	( \
 	  $(DESCRIBE_PKG); \
 	  $(DESCRIBE_CC) \
@@ -100,8 +111,8 @@ build: $(SRC_DIRS)
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export F77=$(FC);\
-	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
+	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
 	  tar xvzf ../$(ZLIB_PKG); \
 	  cd zlib-*; \
@@ -112,8 +123,9 @@ build: $(SRC_DIRS)
 	  ./configure \
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
-	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib; \
-	  $(MAKE) CFLAGS="$(COMPILE_FLAGS)" FFLAGS="$(COMPILE_FLAGS)"; \
+	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib \
+            --host `bash bin/config.guess`; \
+	  $(MAKE); \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 	
