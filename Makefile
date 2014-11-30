@@ -55,12 +55,20 @@
 # 
 # @Copyright@
 
+ifndef VENDOR
+  VENDOR = SDSC_HPC_Group
+endif
+
 ifndef ROLLCOMPILER
   ROLLCOMPILER = gnu
 endif
 
 ifndef ROLLMPI
   ROLLMPI = rocks-openmpi
+endif
+
+ifndef ROLLPY
+  ROLLPY = python
 endif
 
 -include $(ROLLSROOT)/etc/Rolls.mk
@@ -72,15 +80,20 @@ default:
 	  cp $$i $$o; \
 	  for c in $(ROLLCOMPILER); do \
 	    COMPILERNAME=`echo $$c | awk -F/ '{print $$1}'`; \
-	    perl -pi -e 'print and s/COMPILERNAME/'$${COMPILERNAME}'/g if m/COMPILERNAME/' $$o; \
+	    perl -pi -e "print and s/COMPILERNAME/$$COMPILERNAME/g if m/COMPILERNAME/" $$o; \
 	  done; \
 	  for m in $(ROLLMPI); do \
 	    MPINAME=`echo $$m | awk -F/ '{print $$1}'`; \
-	    perl -pi -e 'print and s/MPINAME/'$${MPINAME}'/g if m/MPINAME/' $$o; \
+	    perl -pi -e "print and s/MPINAME/$$MPINAME/g if m/MPINAME/" $$o; \
 	  done; \
-	  perl -pi -e '$$_ = "" if m/COMPILERNAME|MPINAME/' $$o; \
+	  for p in $(ROLLPY); do \
+	    module load $${p}; \
+	    version=`python -c "from __future__ import print_function;import sys; print(sys.version[:3])"`; \
+	    perl -pi -e 'print and s/PYVERSION/'$${version}'/g if m/PYVERSION/' $$o; \
+	  done; \
+	  perl -pi -e '$$_ = "" if m/COMPILERNAME|MPINAME|PYVERSION/' $$o; \
 	done
-	$(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" roll
+	$(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" roll
 
 clean::
 	rm -f _arch bootstrap.py
@@ -90,5 +103,5 @@ distclean: clean
 	  export o=`echo $$i | sed 's/\.in//'`; \
 	  rm -f $$o; \
 	done
-	rm -fr RPMS SRPMS
+	rm -fr RPMS SRPMS cache
 	-rm -f build.log
