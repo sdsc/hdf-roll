@@ -17,7 +17,7 @@ ifndef PYVERSION
 endif
 
 NAME           = sdsc-h5py_py$(PYVERSION)
-VERSION        = 2.4.0b1
+VERSION        = 2.4.0
 RELEASE        = 0
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
