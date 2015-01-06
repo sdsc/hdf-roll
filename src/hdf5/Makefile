@@ -108,7 +108,6 @@ build: $(SRC_DIRS)
           export FCFLAGS="-fPIC $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
 	  ./configure \
-            --host=`bash bin/config.guess` \
 	   --prefix=$(PKGROOT) --enable-production --enable-fortran \
 	   --enable-shared --enable-static --enable-parallel; \
 	  $(MAKE)  \

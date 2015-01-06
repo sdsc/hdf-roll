@@ -103,5 +103,5 @@ distclean: clean
 	  export o=`echo $$i | sed 's/\.in//'`; \
 	  rm -f $$o; \
 	done
-	rm -fr RPMS SRPMS cache
+	rm -fr RPMS SRPMS cache src/build-*
 	-rm -f build.log

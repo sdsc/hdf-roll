@@ -60,9 +60,11 @@
 REDHAT.ROOT = $(CURDIR)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
-include $(ROCKSROOT)/etc/Rules.mk
+-include $(ROCKSROOT)/etc/Rules.mk
+include Rules.mk
 include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
+
 
 ROLLCOMPILER=intel
 COMPILE_FLAGS = -O2 -g
@@ -123,8 +125,7 @@ build: $(SRC_DIRS)
 	  ./configure \
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
-	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib \
-            --host `bash bin/config.guess`; \
+	    --enable-static --with-zlib=`pwd`/zlib-*/build/lib; \
 	  $(MAKE); \
 	)
 	@echo "::: Package $(NAME) build complete :::"
