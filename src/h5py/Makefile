@@ -91,21 +91,6 @@ LICENSE: $(SRC_DIRS)
 	fi
 	echo BSD > $@
 
-AVX_FLAG=
-ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
-    AVX_FLAG = -mavx2
-  else ifeq ("$(COMPILERNAME)", "intel")
-    AVX_FLAG = -xcore-avx2
-  endif
-else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
-    AVX_FLAG = -mavx
-  else ifeq ("$(COMPILERNAME)", "intel")
-    AVX_FLAG = -xavx
-  endif
-endif
-
 build: $(SRC_DIRS)
 	( \
 	  $(MODULE_LOAD_CC); \
@@ -114,9 +99,8 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  export CC=$(CC); \
 	  export CXX=$(CXX); \
-          export CFLAGS=$(AVX_FLAG); \
-          export CXXFLAGS=$(AVX_FLAG); \
 	  export CPPFLAGS="-I$(HDF5_CACHE)/include -I$${MPIHOME}/include"; \
+          export LOADER=$(CC); \
 	  python setup.py configure --hdf5=$(HDF5_CACHE); \
 	  python setup.py build \
 	)
