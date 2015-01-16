@@ -71,8 +71,6 @@ override ROLLMPI = $(FIRSTMPI)
 
 HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
-LICENSE_FILES = $(SOURCE_DIR)/licenses/*.txt
-
 $(NAME).spec: DESCRIPTION LICENSE
 
 DESCRIPTION:
@@ -86,9 +84,7 @@ DESCRIPTION:
 	) > $@
 
 LICENSE: $(SRC_DIRS)
-	if ! grep -q "2013 Andrew Collette" $(SOURCE_DIR)/licenses/license.txt; then \
-	  exit 2; \
-	fi
+	$(CHECK_LICENSE_FILES)
 	echo BSD > $@
 
 build: $(SRC_DIRS)

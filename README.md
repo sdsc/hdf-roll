@@ -29,8 +29,14 @@ Rocks development machine.
 
 ## Dependencies
 
-flex bison (from CentOS distribution)
-numpy (h5py dependency)
+yum install flex bison (from CentOS distribution)
+
+The sdsc-roll must be installed on the build machine, since the build process
+depends on make include files provided by that roll.
+
+The roll sources assume that modulefiles provided by SDSC compiler and python
+rolls are available, but it will build without them as long as the environment
+variables they provide are otherwise defined.
 
 
 ## Building
