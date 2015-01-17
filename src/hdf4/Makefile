@@ -66,7 +66,6 @@ include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
 
 
-ROLLCOMPILER=intel
 COMPILE_FLAGS = -O2 -g
 # NOTE: -O2 w/2015 icc crashes compiler
 # See https://software.intel.com/en-us/forums/topic/490087
@@ -94,7 +93,7 @@ endif
 $(NAME).spec: DESCRIPTION LICENSE
 
 DESCRIPTION:
-	#$(COMPILERSETUP); \
+	$(MODULE_LOAD_CC); \
 	( \
 	  $(DESCRIBE_PKG); \
 	  $(DESCRIBE_CC) \
