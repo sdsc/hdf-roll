@@ -5,7 +5,7 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 NAME           = sdsc-hdf4_$(COMPILERNAME)
 VERSION        = 2.10
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/hdf4/$(COMPILERNAME)
 
 SRC_SUBDIR     = hdf4

@@ -64,7 +64,7 @@ include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
 
 # We only build h5py once, using the first compiler and MPI flavor
-FIRSTCOMPIER := $(firstword $(ROLLCOMPILER))
+FIRSTCOMPILER := $(firstword $(ROLLCOMPILER))
 override ROLLCOMPILER = $(FIRSTCOMPILER)
 FIRSTMPI := $(firstword $(ROLLMPI))
 override ROLLMPI = $(FIRSTMPI)
@@ -88,16 +88,17 @@ LICENSE: $(SRC_DIRS)
 	echo BSD > $@
 
 build: $(SRC_DIRS)
-	patch $(SOURCE_DIR)/h5py/api_compat.h patch-files/api_compat.h.patch
 	( \
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
 	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
-	  export CC=mpicc; \
-	  export CXX=mpicxx; \
+	  export CC=$(CC); \
+	  export CXX=$(CXX); \
 	  export CPPFLAGS="-I$(HDF5_CACHE)/include -I$${MPIHOME}/include"; \
-	  python setup.py build --hdf5=$(HDF5_CACHE) \
+          export LOADER=$(CC); \
+	  python setup.py configure --hdf5=$(HDF5_CACHE); \
+	  python setup.py build \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 
@@ -106,7 +107,7 @@ install::
 	( \
 	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
-	  export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages:$$PYTHONPATH; \
+          export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages:$${PYTHONPATH}; \
 	  python setup.py install --prefix=$(ROOT)/$(PKGROOT) \
 	)
 	$(INSTALL_LICENSE_FILES)
