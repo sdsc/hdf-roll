@@ -67,10 +67,8 @@ include $(SDSCDEVEL)/Rules.mk
 
 
 COMPILE_FLAGS = -O2 -g
-# NOTE: -O2 w/2015 icc crashes compiler
-# See https://software.intel.com/en-us/forums/topic/490087
 ifeq ("$(COMPILERNAME)", "intel")
-  COMPILE_FLAGS = -O0
+  COMPILE_FLAGS = -O2
 else ifeq ("$(COMPILERNAME)", "pgi")
   COMPILE_FLAGS = -fast
 endif
@@ -104,6 +102,7 @@ LICENSE: $(SRC_DIRS)
 	echo -e 'HDF Group' > $@
 
 build: $(SRC_DIRS)
+	#perl -pi -e 's/.PROD_[A-Z]*FLAGS//' $(SOURCE_DIR)/configure
 	( \
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
