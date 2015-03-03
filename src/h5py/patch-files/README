@@ -1,0 +1,3 @@
+setup.py.patch
+  patch setup.py to prevent the installation process from trying (and failing)
+  to install prerequisites that are already available.

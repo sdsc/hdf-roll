@@ -88,6 +88,7 @@ LICENSE: $(SRC_DIRS)
 	echo BSD > $@
 
 build: $(SRC_DIRS)
+	patch $(SOURCE_DIR)/setup.py patch-files/setup.py.patch
 	( \
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
