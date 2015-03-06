@@ -36,7 +36,8 @@ depends on make include files provided by that roll.
 
 The roll sources assume that modulefiles provided by SDSC compiler and python
 rolls are available, but it will build without them as long as the environment
-variables they provide are otherwise defined.
+variables they provide are otherwise defined.  It also depends on python
+modules (e.g., cython) from the python roll.
 
 
 ## Building
