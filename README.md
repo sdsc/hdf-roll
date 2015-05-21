@@ -29,7 +29,7 @@ Rocks development machine.
 
 ## Dependencies
 
-yum install flex bison (from CentOS distribution)
+yum install flex bison libjpg-turbo-devel (from CentOS distribution)
 
 The sdsc-roll must be installed on the build machine, since the build process
 depends on make include files provided by that roll.
