@@ -65,25 +65,37 @@ include $(SDSCDEVEL)/Rules.mk
 
 AVX_FLAG=
 ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
+  ifeq ("$(CNAME)", "gnu")
     AVX_FLAG = -mavx2
-  else ifeq ("$(COMPILERNAME)", "intel")
+  else ifeq ("$(CNAME)", "intel")
     AVX_FLAG = -xcore-avx2
   endif
 else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
+  ifeq ("$(CNAME)", "gnu")
     AVX_FLAG = -mavx
-  else ifeq ("$(COMPILERNAME)", "intel")
+  else ifeq ("$(CNAME)", "intel")
     AVX_FLAG = -xavx
   endif
 endif
 
-HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(CNAME)_$(MPINAME)
 
 $(NAME).spec: DESCRIPTION LICENSE
 
+MODULE_LOAD_COMP = \
+  module load $(1) || true; \
+  echo === Compiler and version ===; \
+  $(2) --version
+
+CC=icc
+CXX = icpc
+F77 = ifort
+FC = ifort
+MODULE_LOAD_C = $(call MODULE_LOAD_COMP, $(RCOMPILER), $(CC))
+MODULE_LOAD_M = $(call MODULE_LOAD_PACKAGE, $(RMPI), MPIHOME)
+
 DESCRIPTION:
-	$(MODULE_LOAD_CC); \
+	$(MODULE_LOAD_C); \
 	( \
 	  $(DESCRIBE_PKG); \
 	  $(DESCRIBE_CC); \
@@ -96,8 +108,8 @@ LICENSE: $(SRC_DIRS)
 
 build: $(SRC_DIRS)
 	( \
-	  $(MODULE_LOAD_CC); \
-	  $(MODULE_LOAD_MPI); \
+	  $(MODULE_LOAD_C); \
+	  $(MODULE_LOAD_M); \
 	  export CC=mpicc; \
 	  export FC=mpif90;\
 	  export CFLAGS="-fPIC $(AVX_FLAG)"; \

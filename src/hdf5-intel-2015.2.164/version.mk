@@ -1,13 +1,13 @@
-ROLLCOMPILER = intel/2015.2.164
-COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+RCOMPILER = intel/2015.2.164
+CNAME := $(firstword $(subst /, ,$(RCOMPILER)))
 
-ROLLMPI = openmpi_ib
-MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
+RMPI = openmpi_ib
+MNAME := $(firstword $(subst /, ,$(RMPI)))
 
-NAME           = sdsc-hdf5_intel-2015.2.164_$(MPINAME)
+NAME           = sdsc-hdf5_intel-2015.2.164_$(MNAME)
 VERSION        = 1.8.14
 RELEASE        = 0
-PKGROOT        = /opt/hdf5/intel-2015.2.164/$(MPINAME)
+PKGROOT        = /opt/hdf5/intel-2015.2.164/$(MNAME)
 
 SRC_SUBDIR     = hdf5
 
