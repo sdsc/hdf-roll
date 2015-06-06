@@ -1,15 +1,14 @@
-ROLLCOMPILER=intel/2015.2.164
-COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+RCOMPILER=intel/2015.2.164
+CNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-ROLLMPI=openmpi_ib
-MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
+RMPI=openmpi_ib
+MNAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-ifndef ROLLPY
-  ROLLPY = python
-endif
+#ROLLP = python/1-intel-2015.2.164
+ROLLPY=python
 
 ifndef PYVERSION
-  PYVERSION = 2.6
+  PYVERSION = 2.7
 endif
 
 NAME           = sdsc-h5py_intel-2015.2.164_py$(PYVERSION)

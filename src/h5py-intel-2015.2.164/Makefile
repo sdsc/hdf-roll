@@ -64,22 +64,33 @@ include $(SDSCDEVEL)/Pull.mk
 include $(SDSCDEVEL)/Rules.mk
 
 # We only build h5py once, using the first compiler and MPI flavor
-FIRSTCOMPILER := $(firstword $(ROLLCOMPILER))
-override ROLLCOMPILER = $(FIRSTCOMPILER)
-FIRSTMPI := $(firstword $(ROLLMPI))
-override ROLLMPI = $(FIRSTMPI)
 
-HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(CNAME)-2015.2.164_$(MNAME)
 
 $(NAME).spec: DESCRIPTION LICENSE
 
+MODULE_LOAD_COMP = \
+  module load $(1) || true; \
+  echo === Compiler and version ===; \
+  $(2) --version
+
+
+CC=icc
+CXX = icpc
+F77 = ifort
+FC = ifort
+MODULE_LOAD_C = $(call MODULE_LOAD_COMP, $(RCOMPILER), $(CC))
+MODULE_LOAD_M = $(call MODULE_LOAD_PACKAGE, $(RMPI), MPIHOME)
+#MODULE_LOAD_P = $(call MODULE_LOAD_COMPILER, $(ROLLP), python)
+DESCRIBE_M = echo built with $(RMPI) $(call GET_MODULE_VERSION, $(RMPI))
+
 DESCRIPTION:
-	$(MODULE_LOAD_CC); \
+	$(MODULE_LOAD_C); \
 	$(MODULE_LOAD_PYTHON); \
 	( \
 	  $(DESCRIBE_PKG); \
 	  $(DESCRIBE_CC); \
-	  $(DESCRIBE_MPI); \
+	  $(DESCRIBE_M); \
 	  $(DESCRIBE_PYTHON) \
 	) > $@
 
@@ -90,8 +101,8 @@ LICENSE: $(SRC_DIRS)
 build: $(SRC_DIRS)
 	patch $(SOURCE_DIR)/setup.py patch-files/setup.py.patch
 	( \
-	  $(MODULE_LOAD_CC); \
-	  $(MODULE_LOAD_MPI); \
+	  $(MODULE_LOAD_C); \
+	  $(MODULE_LOAD_M); \
 	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
 	  export CC=$(CC); \
