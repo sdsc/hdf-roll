@@ -8,7 +8,7 @@ endif
 PACKAGE     = hdf5
 CATEGORY    = applications
 
-NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)
+NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)-2015.2.164
 RELEASE     = 0
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
 
