@@ -18,11 +18,11 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 <package>libjpeg-turbo-devel</package>
 
 <package>sdsc-h5py_pyPYVERSION</packYage>
+<package>sdsc-h5py_intel-2015.2.164_pyPYVERSION</packYage>
 <package>sdsc-hdf4_COMPILERNAME</package>
 <package>sdsc-hdf4-modules_COMPILERNAME</package>
 <package>sdsc-hdf5_COMPILERNAME_MPINAME</package>
 <package>sdsc-hdf5_intel-2015.2.164_openmpi_ib</package>
-<package>sdsc-h5py_intel-2015.2.164_openmpi_ib</package>
 <package>sdsc-hdf5-modules_intel-2015.2.164</package>
 <package>sdsc-hdf5-modules_COMPILERNAME</package>
 <package>sdsc-hdf-roll-test</package>
