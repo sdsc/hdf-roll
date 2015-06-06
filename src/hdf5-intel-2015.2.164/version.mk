@@ -4,7 +4,7 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 ROLLMPI = openmpi_ib
 MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-NAME           = sdsc-hdf5_intel-2015.2.164
+NAME           = sdsc-hdf5_intel-2015.2.164_$(MPINAME)
 VERSION        = 1.8.14
 RELEASE        = 0
 PKGROOT        = /opt/hdf5/intel-2015.2.164/$(MPINAME)
