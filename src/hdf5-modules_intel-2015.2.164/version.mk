@@ -1,5 +1,6 @@
 ROLLCOMPILER = intel/2015.2.164
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+ROLLMPI = openmpi_ib
 
 ifndef PYVERSION
   PYVERSION = 2.6
