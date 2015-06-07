@@ -1,5 +1,5 @@
 RCOMPILER=intel/2015.2.164
-CNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+CNAME := $(firstword $(subst /, ,$(RCOMPILER)))
 
 RMPI=openmpi_ib
 MNAME := $(firstword $(subst /, ,$(ROLLMPI)))
@@ -14,7 +14,7 @@ endif
 NAME           = sdsc-h5py_intel-2015.2.164_py$(PYVERSION)
 VERSION        = 2.4.0
 RELEASE        = 0
-PKGROOT        = /opt/hdf5/$(COMPILERNAME)-intel-2015.2.164/$(MPINAME)
+PKGROOT        = /opt/hdf5/$(CNAME)-intel-2015.2.164/$(MNAME)
 
 SRC_SUBDIR     = h5py
 
