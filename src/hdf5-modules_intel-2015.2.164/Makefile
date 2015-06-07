@@ -5,7 +5,7 @@ include Rules.mk
 include $(SDSCDEVEL)/Rules.mk
 
 $(VERSION_INC): $(VERSION_SRC)
-	echo "VERSION=1.8.14-intel-2015.2.164" > $@
+	echo "VERSION=1.8.14.intel.2015.2.164" > $@
 	
  
 build:
