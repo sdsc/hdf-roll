@@ -21,9 +21,12 @@ modulefile-install:
 	  cp *.module $(ROOT)/$(PKGROOT)/$$V; \
 	  cp *.version $(ROOT)/$(PKGROOT)/.version.$$V; \
 	  perl -pi -e 's#COMPILERNAME#$(COMPILERNAME)#g;' \
+	           -e 's#CNAME#$(CNAME)#g;' \
 	           -e 's#MPINAME#$(MPINAME)#g;' \
 	           -e 's#ROLLCOMPILER#$(ROLLCOMPILER)#g;' \
+	           -e 's#RCOMPILER#$(RCOMPILER)#g;' \
 	           -e 's#ROLLMPI#$(ROLLMPI)#g;' \
+	           -e 's#RMPI#$(RMPI)#g;' \
 	           -e 's#ROLLOPTS#$(ROLLOPTS)#g;' \
 	           -e 's#ROLLPY#$(ROLLPY)#g;' \
 	           -e "s#VERSION#$$V#g;" \
