@@ -78,7 +78,7 @@ else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   endif
 endif
 
-HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MNAME)
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
 
 $(NAME).spec: DESCRIPTION LICENSE
 
