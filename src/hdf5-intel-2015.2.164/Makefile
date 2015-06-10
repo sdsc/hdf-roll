@@ -125,8 +125,8 @@ build: $(SRC_DIRS)
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
 	( \
-	  $(MODULE_LOAD_CC); \
-	  $(MODULE_LOAD_MPI); \
+	  $(MODULE_LOAD_C); \
+	  $(MODULE_LOAD_M); \
 	  cd $(SOURCE_DIR); \
 	  export CC=mpicc; \
 	  export FC=mpif90; \

@@ -117,6 +117,8 @@ build: $(SRC_DIRS)
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages
 	( \
+	  $(MODULE_LOAD_C); \
+	  $(MODULE_LOAD_M); \
 	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
           export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages:$${PYTHONPATH}; \
