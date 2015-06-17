@@ -6,7 +6,7 @@ MNAME := $(firstword $(subst /, ,$(RMPI)))
 
 NAME           = sdsc-hdf5_intel-2015.2.164_$(MNAME)
 VERSION        = 1.8.14
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/hdf5/intel-2015.2.164/$(MNAME)
 
 SRC_SUBDIR     = hdf5

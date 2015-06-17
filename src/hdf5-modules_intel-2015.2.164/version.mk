@@ -10,7 +10,7 @@ PACKAGE     = hdf5
 CATEGORY    = applications
 
 NAME        = sdsc-$(PACKAGE)-modules_$(CNAME)-2015.2.164
-RELEASE     = 0
+RELEASE     = 1
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(CNAME)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)-intel-2015.2.164/version.mk
