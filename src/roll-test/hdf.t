@@ -163,6 +163,11 @@ foreach my $package(@PACKAGES) {
 
       }
 
+      $output = `module load $compiler hdf5; echo \$HDF5HOME 2>&1`;
+      my $firstmpi = $MPIS[0];
+      $firstmpi =~ s#/.*##;
+      like($output, qr#/opt/hdf5/$compiler/$firstmpi#, 'hdf5 modulefile defaults to first mpi');
+
       `/bin/ls /opt/modulefiles/applications/.$compilername/$package/[0-9]* 2>&1`;
       ok($? == 0, "$package/$compilername module installed");
       `/bin/ls /opt/modulefiles/applications/.$compilername/$package/.version.[0-9]* 2>&1`;
