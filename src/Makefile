@@ -65,23 +65,21 @@ default:
 	@echo "copyright|rpm|pkg|clean"
 
 copyright rpm pkg clean::
-	module load $(ROLLPY); \
-	export PYVERSION=`python --version 2>&1 | perl -ne 'print $$1 if /(\d+\.\d+)/'`; \
 	for i in $(SRCDIRS) ; do \
 	  if grep -q '\<NAME.*=.*COMPILERNAME' $$i/version.mk; then \
 	    for c in $(ROLLCOMPILER); do \
 	      if grep -q "\<NAME.*=.*MPINAME" $$i/version.mk; then \
 	        for m in $(ROLLMPI); do \
-	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION} VENDOR=$(VENDOR); \
-	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} VENDOR="$(VENDOR)" $@) || exit 2; \
+	          echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY=$(ROLLPY) VENDOR=$(VENDOR); \
+	          (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI=$$m ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" $@) || exit 2; \
 	        done; \
 	      else \
-	        echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION} VENDOR=$(VENDOR); \
-	        (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} VENDOR="$(VENDOR)" $@) || exit 2; \
+	        echo make $@ in $$i with ROLLCOMPILER=$$c ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) VENDOR=$(VENDOR); \
+	        (cd $$i && $(MAKE) ROLLCOMPILER=$$c ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" $@) || exit 2; \
 	      fi; \
 	    done; \
 	  else \
-	    echo make $@ in $$i with ROLLCOMPILER=$(ROLLCOMPILER) ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) PYVERSION=$${PYVERSION} VENDOR=$(VENDOR); \
-	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" PYVERSION=$${PYVERSION} VENDOR="$(VENDOR)" $@) || exit 2; \
+	    echo make $@ in $$i with ROLLCOMPILER=$(ROLLCOMPILER) ROLLMPI=$(ROLLMPI) ROLLPY=$(ROLLPY) VENDOR=$(VENDOR); \
+	    (cd $$i && $(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" $@) || exit 2; \
 	  fi; \
 	done

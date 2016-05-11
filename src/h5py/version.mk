@@ -12,13 +12,11 @@ ifndef ROLLPY
   ROLLPY = python
 endif
 
-ifndef PYVERSION
-  PYVERSION = 2.6
-endif
+PYVERSION := $(shell module load $(ROLLPY) > /dev/null 2>&1; python --version 2>&1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*')
 
 NAME           = sdsc-h5py_py$(PYVERSION)
 VERSION        = 2.4.0
-RELEASE        = 0
+RELEASE        = 1
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = h5py
