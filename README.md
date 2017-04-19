@@ -55,28 +55,22 @@ roll on a Rocks development appliance, you need to copy the roll to your Rocks
 frontend before continuing with installation.
 
 This roll source supports building with different compilers and for different
-MPI flavors.  The `ROLLCOMPILER` and `ROLLMPI` make variables can be used to
-specify the names of compiler and MPI modulefiles to use for building the
-software, e.g.,
+MPI flavors and python installations.  The `ROLLCOMPILER`, `ROLLMPI`, and
+`ROLLPY` make variables can be used to specify the names of compiler, MPI, and
+python modulefiles to use for building the software, e.g.,
 
 ```shell
-make ROLLCOMPILER=intel ROLLMPI=mvapich2_ib 2>&1 | tee build.log
+make ROLLCOMPILER=intel ROLLMPI=mvapich2_ib ROLLPY=opt-python 2>&1 | tee build.log
 ```
 
 The build process recognizes "gnu", "intel" or "pgi" as the value for the
 `ROLLCOMPILER` variable; any MPI modulefile name may be used as the value of
-the `ROLLMPI` variable.  The default values are "gnu" and "rocks-openmpi".
+the `ROLLMPI` variable, and any python modulefile name for the ROLLPY variable.
+The default values are "gnu", "rocks-openmpi", and "python".
 
 For gnu compilers, the roll also supports a `ROLLOPTS` make variable value of
 'avx', indicating that the target architecture supports AVX instructions.
 
-The roll also supports specifying building with/for python versions other than
-the one included with the o/s.  To use this feature, specify a `ROLLPY` make
-variable that includes a space-delimited list of python modulefiles, e.g.,
-
-```shell
-% make ROLLPY=opt-python 2>&1 | tee build.log
-```
 
 ## Installation
 

@@ -75,6 +75,8 @@ endif
 include Rolls.mk
 
 default:
+	module load $(ROLLPY); \
+	version=`python -c "from __future__ import print_function;import sys; print(sys.version[:3])"`; \
 	for i in `ls nodes/*.in`; do \
 	  export o=`echo $$i | sed 's/\.in//'`; \
 	  cp $$i $$o; \
@@ -86,12 +88,8 @@ default:
 	    MPINAME=`echo $$m | awk -F/ '{print $$1}'`; \
 	    perl -pi -e "print and s/MPINAME/$$MPINAME/g if m/MPINAME/" $$o; \
 	  done; \
-	  for p in $(ROLLPY); do \
-	    module load $${p}; \
-	    version=`python -c "from __future__ import print_function;import sys; print(sys.version[:3])"`; \
-	    perl -pi -e 'print and s/PYVERSION/'$${version}'/g if m/PYVERSION/' $$o; \
-	  done; \
-	  perl -pi -e '$$_ = "" if m/COMPILERNAME|MPINAME|PYVERSION/' $$o; \
+	  perl -pi -e '$$_ = "" if m/COMPILERNAME|MPINAME/' $$o; \
+	  perl -pi -e 's/PYVERSION/'$${version}'/g if m/PYVERSION/' $$o; \
 	done
 	$(MAKE) ROLLCOMPILER="$(ROLLCOMPILER)" ROLLMPI="$(ROLLMPI)" ROLLPY="$(ROLLPY)" VENDOR="$(VENDOR)" roll
 
