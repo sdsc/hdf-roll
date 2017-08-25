@@ -1,14 +1,9 @@
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
-
 PACKAGE     = hdf5
 CATEGORY    = applications
 
-NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)
-RELEASE     = 8
-PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
+NAME        = sdsc-$(PACKAGE)-modules
+RELEASE     = 9
+PKGROOT     = /opt/modulefiles/$(CATEGORY)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
 VERSION_INC = version.inc
