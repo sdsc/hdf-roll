@@ -9,4 +9,4 @@ VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
 VERSION_INC = version.inc
 include $(VERSION_INC)
 
-RPM.EXTRAS  = AutoReq:No
+RPM.EXTRAS  = AutoReq:No\nObsoletes:sdsc-hdf4-modules_gnu,sdsc-hdf4-modules_intel,sdsc-hdf4-modules_pgi
