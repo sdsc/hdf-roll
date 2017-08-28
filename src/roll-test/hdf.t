@@ -137,6 +137,7 @@ close(OUT);
 
 # hdf-common.xml
 foreach my $package(@PACKAGES) {
+
   foreach my $compiler(@COMPILERS) {
 
     my $compilername = (split('/', $compiler))[0];
@@ -168,16 +169,18 @@ foreach my $package(@PACKAGES) {
       $firstmpi =~ s#/.*##;
       like($output, qr#/opt/hdf5/$compiler/$firstmpi#, 'hdf5 modulefile defaults to first mpi');
 
-      `/bin/ls /opt/modulefiles/applications/.$compilername/$package/[0-9]* 2>&1`;
-      ok($? == 0, "$package/$compilername module installed");
-      `/bin/ls /opt/modulefiles/applications/.$compilername/$package/.version.[0-9]* 2>&1`;
-      ok($? == 0, "$package/$compilername version module installed");
-      ok(-l "/opt/modulefiles/applications/.$compilername/$package/.version",
-         "$package/$compilername version module link created");
 
     }
 
   }
+
+  `/bin/ls /opt/modulefiles/applications/$package/[0-9]* 2>&1`;
+  ok($? == 0, "$package module installed");
+  `/bin/ls /opt/modulefiles/applications/$package/.version.[0-9]* 2>&1`;
+  ok($? == 0, "$package version module installed");
+  ok(-l "/opt/modulefiles/applications/$package/.version",
+     "$package version module link created");
+
 }
 
 `/bin/rm -fr $TESTFILE*`;
