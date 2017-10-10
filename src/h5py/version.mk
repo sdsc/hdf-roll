@@ -17,7 +17,7 @@ PYVERSION := $(shell module load $(ROLLPY) > /dev/null 2>&1; python --version 2>
 
 NAME           = sdsc-h5py_py$(PYVERSION)
 VERSION        = 2.4.0
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = h5py
@@ -31,3 +31,4 @@ SOURCE_DIR     = $(SOURCE_PKG:%.$(SOURCE_SUFFIX)=%)
 TAR_GZ_PKGS    = $(SOURCE_PKG)
 
 RPM.EXTRAS     = AutoReq:No
+RPM.PREFIX     = $(PKGROOT)

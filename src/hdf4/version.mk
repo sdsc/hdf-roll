@@ -5,7 +5,7 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 NAME           = sdsc-hdf4_$(COMPILERNAME)
 VERSION        = 2.10
-RELEASE        = 2
+RELEASE        = 3
 PKGROOT        = /opt/hdf4/$(COMPILERNAME)
 
 SRC_SUBDIR     = hdf4
@@ -25,3 +25,4 @@ ZLIB_DIR       = $(ZLIB_PKG:%.$(SOURCE_SUFFIX)=%)
 TAR_GZ_PKGS    = $(SOURCE_PKG) $(ZLIB_PKG)
 
 RPM.EXTRAS     = AutoReq:No
+RPM.PREFIX     = $(PKGROOT)
