@@ -17,10 +17,12 @@ All rights reserved. Rocks(r) v7.0 www.rocksclusters.org
 <!-- Required by hdf4 -->
 <package>libjpeg-turbo-devel</package>
 
+<package>sdsc-h5py-1.8_pyPYVERSION</package>
 <package>sdsc-h5py_pyPYVERSION</package>
 <package>sdsc-hdf4_COMPILERNAME</package>
 <package>sdsc-hdf4-modules</package>
 <package>sdsc-hdf5_COMPILERNAME_MPINAME</package>
+<package>sdsc-hdf5-1.8_COMPILERNAME_MPINAME</package>
 <package>sdsc-hdf5-modules</package>
 <package>sdsc-hdf-roll-test</package>
 
