@@ -98,6 +98,7 @@ build: $(SRC_DIRS)
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
 	  export CC=mpicc; \
+	  export CXX=mpicxx; \
 	  export FC=mpif90;\
 	  export CFLAGS="-fPIC $(AVX_FLAG)"; \
           export FCFLAGS="-fPIC $(AVX_FLAG)"; \
