@@ -50,7 +50,7 @@ if [info exists env(HDF5HOME)] {
   }
 }
 
-set hdf5Home /opt/hdf5/$compiler/$mpi
+set hdf5Home /opt/hdf5/VERSION/$compiler/$mpi
 setenv HDF5HOME $hdf5Home
 prepend-path PATH $hdf5Home/bin
 prepend-path LD_LIBRARY_PATH $hdf5Home/lib

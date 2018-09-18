@@ -11,7 +11,7 @@ MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 NAME           = sdsc-hdf5-1.8_$(COMPILERNAME)_$(MPINAME)
 VERSION        = 1.8.21
 RELEASE        = 0
-PKGROOT        = /opt/hdf5/$(COMPILERNAME)/$(MPINAME)
+PKGROOT        = /opt/hdf5/$(VERSION)/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = hdf5
 
