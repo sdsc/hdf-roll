@@ -124,6 +124,7 @@ install::
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export FC=$(FC);  \
+	  export CXX=$(CXX); \
 	  cd $(SOURCE_DIR); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	)

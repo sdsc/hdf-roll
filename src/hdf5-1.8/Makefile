@@ -118,6 +118,7 @@ install::
 	  cd $(SOURCE_DIR); \
 	  export CC=mpicc; \
 	  export FC=mpif90; \
+	  export CXX=mpicxx; \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install \
 	)
 	$(INSTALL_LICENSE_FILES)

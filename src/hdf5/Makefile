@@ -104,7 +104,7 @@ build: $(SRC_DIRS)
           export FCFLAGS="-fPIC $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
 	  ./configure \
-	   --prefix=$(PKGROOT) --enable-production --enable-fortran \
+	   --prefix=$(ROOT)/$(PKGROOT) --enable-production --enable-fortran \
 	   --enable-shared --enable-static --enable-parallel; \
 	  $(MAKE)  \
 	)
@@ -118,7 +118,8 @@ install::
 	  cd $(SOURCE_DIR); \
 	  export CC=mpicc; \
 	  export FC=mpif90; \
-	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install \
+	  export CXX=mpicxx; \
+	  $(MAKE) PREFIX=$(ROOT)/$(PKGROOT) install \
 	)
 	$(INSTALL_LICENSE_FILES)
 	mkdir -p -m 755 $(HDF5_CACHE)
