@@ -17,7 +17,7 @@ my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
 my @MPIS = split(/\s+/, 'ROLLMPI');
 my @PYTHONS = split(/\s+/, 'ROLLPY');
 my $python = $PYTHONS[0]; # Only expect one python
-my @PACKAGES = ('hdf4', 'hdf5');
+my @PACKAGES = ('hdf4', 'hdf5', 'hdf5-1.8');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 my %LIBS = (
   'hdf4'=>'-lmfhdf -ldf -ljpeg -lz', 'hdf5'=>'-lhdf5'
@@ -156,15 +156,15 @@ foreach my $package(@PACKAGES) {
         $output = `bash $TESTFILE.sh $compiler $mpi /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
         ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
         like($output, qr/SUCCEED/, "run with $package/$subdir");
-        if( $package eq 'hdf5' && $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
-           $output=`module load $compiler $mpi hdf5 $python;python $TESTFILE.py`;
-           like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with h5py");
+        if( ( $package eq 'hdf5' || $package eq 'hdf5-1.8' ) && $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
+           $output=`module load $compiler $mpi $package  $python;python $TESTFILE.py`;
+           like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with $package");
         }
         `/bin/rm $TESTFILE.exe`;
 
       }
 
-      $output = `module load $compiler hdf5; echo \$HDF5HOME 2>&1`;
+      $output = `module load $compiler $package; echo \$HDF5HOME 2>&1`;
       my $firstmpi = $MPIS[0];
       $firstmpi =~ s#/.*##;
       like($output, qr#/opt/hdf5/$compiler/$firstmpi#, 'hdf5 modulefile defaults to first mpi');

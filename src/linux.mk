@@ -57,5 +57,6 @@
 SRCDIRS = `find . -maxdepth 1 -type d \
 	-not -name CVS \
 	-not -name build-* \
+	-not -name h5py-1.8 \
 	-not -name h5py \
-	-not -name .` h5py
+	-not -name .` h5py-1.8 h5py

@@ -12,7 +12,7 @@ ifndef ROLLPY
   ROLLPY = python
 endif
 
-HDF5VERSION=$(shell grep ^\s*VERSION.*= $(REDHAT.ROOT)/src/hdf5/version.mk |awk -F "=" '{print $$2}'|sed 's/ //g')
+HDF5VERSION=$(shell grep ^\s*VERSION.*= $(REDHAT.ROOT)/src/hdf5-1.8/version.mk |awk -F "=" '{print $$2}'|sed 's/ //g')
 
 # Query python version via shell macro so that we can use it in the rpm name.
 PYVERSION := $(shell module load $(ROLLPY) > /dev/null 2>&1; python --version 2>&1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*')
