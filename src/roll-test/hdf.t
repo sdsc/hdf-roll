@@ -9,7 +9,7 @@ use Test::More qw(no_plan);
 my $TESTFILE = "tmphdf";
 
 my $appliance = $#ARGV >= 0 ? $ARGV[0] :
-                -d '/export/rocks/install' ? 'Frontend' : 'Compute';
+		-d '/export/rocks/install' ? 'Frontend' : 'Compute';
 my $installedOnAppliancesPattern = '.';
 my $output;
 
@@ -17,11 +17,12 @@ my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
 my @MPIS = split(/\s+/, 'ROLLMPI');
 my @PYTHONS = split(/\s+/, 'ROLLPY');
 my $python = $PYTHONS[0]; # Only expect one python
-my @PACKAGES = ('hdf4', 'hdf5', 'hdf5-1.8');
+my @PACKAGES = ('hdf4', 'hdf5');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 my %LIBS = (
   'hdf4'=>'-lmfhdf -ldf -ljpeg -lz', 'hdf5'=>'-lhdf5'
 );
+my %HVERS = ('hdf4' => '2.14','hdf5' => '1.8.21 1.10.3');
 
 open(OUT, ">${TESTFILE}hdf4.c");
 # Adapted from sd_create.c downloaded from
@@ -138,40 +139,52 @@ close(OUT);
 # hdf-common.xml
 foreach my $package(@PACKAGES) {
 
-  foreach my $compiler(@COMPILERS) {
+  my @hdfversions = split(/\s+/,$HVERS{$package});
 
-    my $compilername = (split('/', $compiler))[0];
+  foreach my $hdfversion(@hdfversions) {
 
-    SKIP: {
+     foreach my $compiler(@COMPILERS) {
 
-      skip "$package/$compilername not installed", 5
-        if ! -d "/opt/$package/$compilername";
- 
-      MPITEST:
-      foreach my $mpi(@MPIS) {
+         my $compilername = (split('/', $compiler))[0];
 
-        my $subdir =
-          $package eq 'hdf4' ? "$compilername" : "$compilername/$mpi";
+     SKIP: {
 
-        $output = `bash $TESTFILE.sh $compiler $mpi /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
+      my $ext =
+          $package eq 'hdf4' ? "" : "/$hdfversion";
+
+      skip "$package$ext/$compilername not installed", 5
+        if ! -d "/opt/$package$ext/$compilername";
+
+      if ( $package eq "hdf5" )
+      {
+       foreach my $mpi(@MPIS) {
+
+          $subdir="$hdfversion/$compiler/$mpi";
+          $output = `bash $TESTFILE.sh $compiler $mpi /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
+          ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
+          like($output, qr/SUCCEED/, "run with $package/$subdir");
+          if( $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
+             $output=`module load $compiler $mpi $package  $python;python $TESTFILE.py`;
+             like($output, qr/4 \[4 5 6 7 8 9\]/, "h5py read in file with $package version $hdfversion");
+          }
+          `/bin/rm $TESTFILE.exe`;
+         }
+         $output = `module load $compiler $package/$hdfversion; echo \$HDF5HOME 2>&1`;
+         my $firstmpi = $MPIS[0];
+         $firstmpi =~ s#/.*##;
+         like($output, qr#/opt/hdf5/$hdfversion/$compiler/$firstmpi#, "hdf5 version $hdfversion modulefile defaults to first mpi");
+       }
+       else
+       {
+         $subdir=$compiler;
+         $output = `bash $TESTFILE.sh $compiler $MPIS[0]  /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
         ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
         like($output, qr/SUCCEED/, "run with $package/$subdir");
-        if( ( $package eq 'hdf5' || $package eq 'hdf5-1.8' ) && $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
-           $output=`module load $compiler $mpi $package  $python;python $TESTFILE.py`;
-           like($output, qr/4 \[4 5 6 7 8 9\]/, "read in file with $package");
-        }
         `/bin/rm $TESTFILE.exe`;
-
       }
 
-      $output = `module load $compiler $package; echo \$HDF5HOME 2>&1`;
-      my $firstmpi = $MPIS[0];
-      $firstmpi =~ s#/.*##;
-      like($output, qr#/opt/hdf5/$compiler/$firstmpi#, 'hdf5 modulefile defaults to first mpi');
-
-
+     }
     }
-
   }
 
   `/bin/ls /opt/modulefiles/applications/$package/[0-9]* 2>&1`;
