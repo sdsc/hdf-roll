@@ -101,20 +101,15 @@ LICENSE: $(SRC_DIRS)
 	echo -e 'HDF Group' > $@
 
 build: $(SRC_DIRS)
-	#perl -pi -e 's/.PROD_[A-Z]*FLAGS//' $(SOURCE_DIR)/configure
 	( \
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
+	  export CXX=$(CXX); \
 	  export F77=$(FC);\
 	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
-	  tar xvzf ../$(ZLIB_PKG); \
-	  cd zlib-*; \
-	  ./configure --prefix=`pwd`/build; \
-	  $(MAKE); \
-	  $(MAKE) install; \
-	  cd ..; \
+          autoreconf -fi; \
 	  ./configure \
 	    --prefix=$(PKGROOT) \
 	    --enable-fortran --enable-production --disable-shared \
@@ -129,6 +124,7 @@ install::
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export FC=$(FC);  \
+	  export CXX=$(CXX); \
 	  cd $(SOURCE_DIR); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	)

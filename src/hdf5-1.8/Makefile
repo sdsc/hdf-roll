@@ -53,10 +53,79 @@
 #
 # @Copyright@
 #
+# $Log$
 
-SRCDIRS = `find . -maxdepth 1 -type d \
-	-not -name CVS \
-	-not -name build-* \
-	-not -name h5py-1.8 \
-	-not -name h5py \
-	-not -name .` h5py-1.8 h5py
+REDHAT.ROOT = $(CURDIR)/../../
+
+-include $(ROCKSROOT)/etc/Rules.mk
+include Rules.mk
+include $(SDSCDEVEL)/Pull.mk
+include $(SDSCDEVEL)/Rules.mk
+
+AVX_FLAG=
+ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx2
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xcore-avx2
+  endif
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xavx
+  endif
+endif
+
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-1.8-$(COMPILERNAME)_$(MPINAME)
+
+$(NAME).spec: DESCRIPTION LICENSE
+
+DESCRIPTION:
+	$(MODULE_LOAD_CC); \
+	( \
+	  $(DESCRIBE_PKG); \
+	  $(DESCRIBE_CC); \
+	  $(DESCRIBE_MPI) \
+	) > $@
+
+LICENSE: $(SRC_DIRS)
+	$(CHECK_LICENSE_FILES)
+	echo -e 'HDF Group' > $@
+
+build: $(SRC_DIRS)
+	( \
+	  $(MODULE_LOAD_CC); \
+	  $(MODULE_LOAD_MPI); \
+	  export CC=mpicc; \
+	  export CXX=mpicxx; \
+	  export FC=mpif90;\
+	  export CFLAGS="-fPIC $(AVX_FLAG)"; \
+          export FCFLAGS="-fPIC $(AVX_FLAG)"; \
+	  cd $(SOURCE_DIR); \
+	  ./configure \
+	   --prefix=$(PKGROOT) --enable-production --enable-fortran \
+	   --enable-shared --enable-static --enable-parallel; \
+	  $(MAKE)  \
+	)
+	@echo "::: Package $(NAME) build complete :::"
+	
+install::
+	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
+	( \
+	  $(MODULE_LOAD_CC); \
+	  $(MODULE_LOAD_MPI); \
+	  cd $(SOURCE_DIR); \
+	  export CC=mpicc; \
+	  export FC=mpif90; \
+	  export CXX=mpicxx; \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install \
+	)
+	$(INSTALL_LICENSE_FILES)
+	mkdir -p -m 755 $(HDF5_CACHE)
+	cp -r $(ROOT)/$(PKGROOT)/* $(HDF5_CACHE)/
+	@echo "::: Package $(NAME) install complete :::"
+
+clean::
+	rm -rf $(SOURCE_DIR) DESCRIPTION LICENSE
+

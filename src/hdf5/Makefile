@@ -98,6 +98,7 @@ build: $(SRC_DIRS)
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
 	  export CC=mpicc; \
+	  export CXX=mpicxx; \
 	  export FC=mpif90;\
 	  export CFLAGS="-fPIC $(AVX_FLAG)"; \
           export FCFLAGS="-fPIC $(AVX_FLAG)"; \
@@ -117,7 +118,9 @@ install::
 	  cd $(SOURCE_DIR); \
 	  export CC=mpicc; \
 	  export FC=mpif90; \
-	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install \
+	  export CXX=mpicxx; \
+	  $(MAKE) install; \
+          cp -r hdf5/* $(ROOT)/$(PKGROOT) \
 	)
 	$(INSTALL_LICENSE_FILES)
 	mkdir -p -m 755 $(HDF5_CACHE)
