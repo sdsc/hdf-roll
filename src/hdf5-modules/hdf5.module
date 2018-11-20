@@ -14,7 +14,7 @@ module-whatis "MPI Flavors: $mpinames"
 # module.  Report an error if neither applies.
 if [info exists env(HDF5HOME)] {
   foreach {compiler} $compilernames {
-    if {[string first "/$compiler" $::env(HDF5HOME)] >= 0} {
+    if {[string first "/$compiler/" $::env(HDF5HOME)] >= 0} {
       break
     }
   }
