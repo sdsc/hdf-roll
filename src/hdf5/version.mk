@@ -9,9 +9,9 @@ endif
 MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
 NAME           = sdsc-hdf5_$(COMPILERNAME)_$(MPINAME)
-VERSION        = 1.10.3
+VERSION        = 1.8.18
 RELEASE        = 0
-PKGROOT        = /opt/hdf5/$(VERSION)/$(COMPILERNAME)/$(MPINAME)
+PKGROOT        = /share/apps/hdf5/$(VERSION)/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = hdf5
 
