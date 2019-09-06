@@ -15,6 +15,8 @@ my $output;
 
 my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
 my @MPIS = split(/\s+/, 'ROLLMPI');
+my @PYTHONS = split(/\s+/, 'ROLLPY');
+my $python = $PYTHONS[0]; # Only expect one python
 my @PACKAGES = ('hdf4', 'hdf5');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 my %LIBS = (
@@ -162,7 +164,7 @@ foreach my $package(@PACKAGES) {
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
           if( $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
-             $output=`module load $compiler $mpi $package  python;python3 $TESTFILE.py`;
+             $output=`module load $compiler $mpi $package  $python;python3 $TESTFILE.py`;
              like($output, qr/4 \[4 5 6 7 8 9\]/, "h5py read in file with $package version $hdfversion");
           }
           `/bin/rm $TESTFILE.exe`;
