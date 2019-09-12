@@ -75,7 +75,7 @@ include Rolls.mk
 
 default:
 	module load $(ROLLPY); \
-	version=`python -c "from __future__ import print_function;import sys; print(sys.version[:3])"`; \
+	version=`python3 -c "from __future__ import print_function;import sys; print(sys.version[:3])"`; \
 	for i in `ls nodes/*.in`; do \
 	  export o=`echo $$i | sed 's/\.in//'`; \
 	  cp $$i $$o; \

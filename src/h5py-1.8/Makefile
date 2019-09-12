@@ -68,7 +68,7 @@ override ROLLCOMPILER = $(FIRSTCOMPILER)
 FIRSTMPI := $(firstword $(ROLLMPI))
 override ROLLMPI = $(FIRSTMPI)
 
-HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-$(COMPILERNAME)_$(MPINAME)
+HDF5_CACHE = $(REDHAT.ROOT)/cache/build-hdf5-1.8-$(COMPILERNAME)_$(MPINAME)
 
 $(NAME).spec: DESCRIPTION LICENSE
 
@@ -96,8 +96,8 @@ build: $(SRC_DIRS)
 	  export CXX=$(CXX); \
 	  export CPPFLAGS="-I$(HDF5_CACHE)/include -I$${MPIHOME}/include"; \
           export LOADER=$(CC); \
-	  python setup.py configure --hdf5=$(HDF5_CACHE); \
-	  python setup.py build \
+	  python3 setup.py configure --hdf5=$(HDF5_CACHE); \
+	  python3 setup.py build \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 
@@ -107,7 +107,7 @@ install::
 	  $(MODULE_LOAD_PYTHON); \
 	  cd $(SOURCE_DIR); \
           export PYTHONPATH=$(ROOT)/$(PKGROOT)/lib/python$(PYVERSION)/site-packages:$${PYTHONPATH}; \
-	  python setup.py install --prefix=$(ROOT)/$(PKGROOT) \
+	  python3 setup.py install --prefix=$(ROOT)/$(PKGROOT) \
 	)
 	$(INSTALL_LICENSE_FILES)
 	@echo "::: Package $(NAME) install complete :::"

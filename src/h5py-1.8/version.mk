@@ -15,11 +15,11 @@ endif
 HDF5VERSION=$(shell grep ^\s*VERSION.*= $(REDHAT.ROOT)/src/hdf5-1.8/version.mk |awk -F "=" '{print $$2}'|sed 's/ //g')
 
 # Query python version via shell macro so that we can use it in the rpm name.
-PYVERSION := $(shell module load $(ROLLPY) > /dev/null 2>&1; python --version 2>&1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*')
+PYVERSION := $(shell module load $(ROLLPY) > /dev/null 2>&1; python3 --version 2>&1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*')
 
-NAME           = sdsc-h5py_py$(PYVERSION)
+NAME           = sdsc-h5py-1.8_py$(PYVERSION)
 VERSION        = 2.8.0
-RELEASE        = 0
+RELEASE        = 1
 PKGROOT        = /opt/hdf5/$(HDF5VERSION)/$(COMPILERNAME)/$(MPINAME)
 
 SRC_SUBDIR     = h5py

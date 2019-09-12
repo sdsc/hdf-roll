@@ -122,7 +122,7 @@ file=h5py.File(fileName,"r")
 
 ar=file['IntArray']
 for i in range(len(ar)):
-	print i,ar[i]
+	print(i,ar[i])
 END
 close(OUT);
 
@@ -164,7 +164,7 @@ foreach my $package(@PACKAGES) {
           ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
           like($output, qr/SUCCEED/, "run with $package/$subdir");
           if( $compiler eq $COMPILERS[0] && $mpi eq $MPIS[0] ) {
-             $output=`module load $compiler $mpi $package  $python;python $TESTFILE.py`;
+             $output=`module load $compiler $mpi $package  $python;python3 $TESTFILE.py`;
              like($output, qr/4 \[4 5 6 7 8 9\]/, "h5py read in file with $package version $hdfversion");
           }
           `/bin/rm $TESTFILE.exe`;
