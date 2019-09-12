@@ -3,7 +3,7 @@ ifndef ROLLCOMPILER
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-NAME           = sdsc-hdf5-serial_$(COMPILERNAME)
+NAME           = sdsc-hdf5_$(COMPILERNAME)_serial
 VERSION        = 1.10.3
 RELEASE        = 0
 PKGROOT        = /opt/hdf5/$(VERSION)/$(COMPILERNAME)/serial
