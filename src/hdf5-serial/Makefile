@@ -97,7 +97,7 @@ build: $(SRC_DIRS)
 	  $(MODULE_LOAD_CC); \
 	  export CC=$(CC); \
 	  export CXX=$(CXX); \
-	  export FC=$(FC)
+	  export FC=$(FC); \
 	  export CFLAGS="-fPIC $(AVX_FLAG)"; \
           export FCFLAGS="-fPIC $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
