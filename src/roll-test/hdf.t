@@ -212,12 +212,12 @@ foreach my $compiler(@COMPILERS) {
       like($output, qr/SUCCEED/, "run with $package/$subdir");
       `/bin/rm $TESTFILE.exe`;
     }
-  `/bin/ls /opt/modulefiles/applications/$package-serial/[0-9]* 2>&1`;
-  ok($? == 0, "$package-serial module installed");
-  `/bin/ls /opt/modulefiles/applications/$package-serial/.version.[0-9]* 2>&1`;
-  ok($? == 0, "$package-serial version module installed");
-  ok(-l "/opt/modulefiles/applications/$package-serial/.version",
-     "$package-serial version module link created");
 }
+`/bin/ls /opt/modulefiles/applications/$package-serial/[0-9]* 2>&1`;
+ok($? == 0, "$package-serial module installed");
+`/bin/ls /opt/modulefiles/applications/$package-serial/.version.[0-9]* 2>&1`;
+ok($? == 0, "$package-serial version module installed");
+ok(-l "/opt/modulefiles/applications/$package-serial/.version",
+   "$package-serial version module link created");
 
 `/bin/rm -fr $TESTFILE*`;
