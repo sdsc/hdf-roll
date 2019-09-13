@@ -17,7 +17,7 @@ my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
 my @MPIS = split(/\s+/, 'ROLLMPI');
 my @PYTHONS = split(/\s+/, 'ROLLPY');
 my $python = $PYTHONS[0]; # Only expect one python
-my @PACKAGES = ('hdf4', 'hdf5', 'hdf5-serial');
+my @PACKAGES = ('hdf4', 'hdf5');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 my %LIBS = (
   'hdf4'=>'-lmfhdf -ldf -ljpeg -lz', 'hdf5'=>'-lhdf5'
@@ -174,20 +174,6 @@ foreach my $package(@PACKAGES) {
          $firstmpi =~ s#/.*##;
          like($output, qr#/opt/hdf5/$hdfversion/$compiler/$firstmpi#, "hdf5 version $hdfversion modulefile defaults to first mpi");
        }
-       elsif ( $package eq "hdf5-serial" )
-       {
-         SKIP: {
-
-           skip " ", 5
-               if ! $hdfversion != $hdfversions[2];
-            $subdir="$hdfversion/$compiler/serial";
-            $output = `bash $TESTFILE.sh $compiler " " /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
-            ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
-            like($output, qr/SUCCEED/, "run with $package/$subdir");
-            `/bin/rm $TESTFILE.exe`;
-           }
-           $output = `module load $compiler $package/$hdfversion; echo \$HDF5HOME 2>&1`;
-       }
        else
        {
          $subdir=$compiler;
@@ -208,6 +194,30 @@ foreach my $package(@PACKAGES) {
   ok(-l "/opt/modulefiles/applications/$package/.version",
      "$package version module link created");
 
+}
+my @hdfversions = split(/\s+/,$HVERS{'hdf5'});
+my $hdfversion  = $hdfversions[1];
+foreach my $compiler(@COMPILERS) {
+
+    $package = "hdf5";
+    my $compilername = (split('/', $compiler))[0];
+    SKIP: {
+
+      skip "$package/$hdfversion/$compilername serial library not installed", 5
+        if ! -d "/opt/$package/$hdfversion/$compilername/serial";
+
+      $subdir="$hdfversion/$compiler/serial";
+      $output = `bash $TESTFILE.sh $compiler " " /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
+      ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
+      like($output, qr/SUCCEED/, "run with $package/$subdir");
+      `/bin/rm $TESTFILE.exe`;
+    }
+  `/bin/ls /opt/modulefiles/applications/$package-serial/[0-9]* 2>&1`;
+  ok($? == 0, "$package-serial module installed");
+  `/bin/ls /opt/modulefiles/applications/$package-serial/.version.[0-9]* 2>&1`;
+  ok($? == 0, "$package-serial version module installed");
+  ok(-l "/opt/modulefiles/applications/$package-serial/.version",
+     "$package-serial version module link created");
 }
 
 `/bin/rm -fr $TESTFILE*`;
