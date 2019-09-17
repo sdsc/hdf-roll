@@ -195,5 +195,29 @@ foreach my $package(@PACKAGES) {
      "$package version module link created");
 
 }
+my @hdfversions = split(/\s+/,$HVERS{'hdf5'});
+my $hdfversion  = $hdfversions[1];
+foreach my $compiler(@COMPILERS) {
+
+    $package = "hdf5";
+    my $compilername = (split('/', $compiler))[0];
+    SKIP: {
+
+      skip "$package/$hdfversion/$compilername serial library not installed", 5
+        if ! -d "/opt/$package/$hdfversion/$compilername/serial";
+
+      $subdir="$hdfversion/$compiler/serial";
+      $output = `bash $TESTFILE.sh $compiler " " /opt/$package/$subdir $CC{$compilername} $TESTFILE$package.c "$LIBS{$package}" 2>&1`;
+      ok(-f "$TESTFILE.exe", "compile/link with $package/$subdir");
+      like($output, qr/SUCCEED/, "run with $package/$subdir");
+      `/bin/rm $TESTFILE.exe`;
+    }
+}
+`/bin/ls /opt/modulefiles/applications/$package-serial/[0-9]* 2>&1`;
+ok($? == 0, "$package-serial module installed");
+`/bin/ls /opt/modulefiles/applications/$package-serial/.version.[0-9]* 2>&1`;
+ok($? == 0, "$package-serial version module installed");
+ok(-l "/opt/modulefiles/applications/$package-serial/.version",
+   "$package-serial version module link created");
 
 `/bin/rm -fr $TESTFILE*`;
