@@ -5,7 +5,7 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
 NAME           = sdsc-hdf5_$(COMPILERNAME)_serial
 VERSION        = 1.10.3
-RELEASE        = 0
+RELEASE        = 1
 PKGROOT        = /opt/hdf5/$(VERSION)/$(COMPILERNAME)/serial
 
 SRC_SUBDIR     = hdf5

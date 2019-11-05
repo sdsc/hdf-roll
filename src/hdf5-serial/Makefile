@@ -103,7 +103,7 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  ./configure \
 	   --prefix=$(PKGROOT) --enable-build-mode=production --enable-fortran=yes \
-	   --enable-shared --enable-static --enable-parallel=no; \
+	   --enable-shared --enable-static --enable-parallel=no --enable-cxx; \
 	  $(MAKE)  \
 	)
 	@echo "::: Package $(NAME) build complete :::"
