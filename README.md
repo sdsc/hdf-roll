@@ -15,6 +15,12 @@ data model, library, and file format for storing and managing data.
 - The <a href="http://www.h5py.org" target="_blank">H5PY</a> package is a
 Pythonic interface to the HDF5 binary data format.
 
+For the more recent version of hdf5 , both parallel and serial libraries are built.
+
+Tne directory structure of the installation is:
+
+/opt/hdf5/[version]/[compiler]/[mpi stack or serial]/
+
 
 ## Requirements
 
